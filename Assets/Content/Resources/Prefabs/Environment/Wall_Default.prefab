@@ -96,6 +96,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7024806533507940199}
   - component: {fileID: 9121305836114911816}
+  - component: {fileID: 146365886781257711}
   m_Layer: 7
   m_Name: Wall_Default
   m_TagString: Untagged
@@ -140,3 +141,46 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.0000005, y: 4, z: 0.5}
   m_Center: {x: 0, y: 2, z: 0}
+--- !u!114 &146365886781257711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7729585199927666657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc94c3ce6de4c74989839aecde663d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SourceCollider: {fileID: 9121305836114911816}
+  Size:
+    X:
+      RawValue: 262144
+    Y:
+      RawValue: 262144
+    Z:
+      RawValue: 32768
+  PositionOffset:
+    X:
+      RawValue: 0
+    Y:
+      RawValue: 131072
+    Z:
+      RawValue: 0
+  RotationOffset:
+    X:
+      RawValue: 0
+    Y:
+      RawValue: 0
+    Z:
+      RawValue: 0
+  Settings:
+    MutableMode: 0
+    PhysicsMaterial:
+      Id:
+        Value: 0
+    Asset:
+      Id:
+        Value: 0
+    Trigger: 0

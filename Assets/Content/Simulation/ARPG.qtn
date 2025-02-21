@@ -1,0 +1,18 @@
+// ---INPUTS---
+input
+{
+    FPVector2 Move;
+}
+
+// ---COMPONENTS---
+component PlayerLink
+{
+    player_ref Player;
+}
+
+// ---EVENTS---
+synced event PlayerSpawned
+{
+    player_ref Player;
+    entity_ref Entity;
+}

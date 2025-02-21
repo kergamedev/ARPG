@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SimulationConfig
   m_EditorClassIdentifier: 
   Identifier:
-    Path: Content/Resources/SimulationConfig
+    Path: Content/Resources/Configs/SimulationConfig
     Guid:
       Value: 347129969110099031
   Entities:

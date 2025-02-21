@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7729585199927666657, guid: 9fd35e2fa6ce9cd4b88a887441688f44, type: 3}
       propertyPath: m_Name
-      value: Wall.01 Variant
+      value: Wall_Decorated_A
       objectReference: {fileID: 0}
     - target: {fileID: 8564774664414881930, guid: 9fd35e2fa6ce9cd4b88a887441688f44, type: 3}
       propertyPath: m_Mesh
