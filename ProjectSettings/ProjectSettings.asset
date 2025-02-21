@@ -816,7 +816,24 @@ PlayerSettings:
   webGLWebAssemblyBigInt: 0
   webGLCloseOnQuit: 0
   webWasm2023: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: QUANTUM_LOGLEVEL_DEBUG
+    EmbeddedLinux: QUANTUM_LOGLEVEL_DEBUG
+    GameCoreScarlett: QUANTUM_LOGLEVEL_DEBUG
+    GameCoreXboxOne: QUANTUM_LOGLEVEL_DEBUG
+    LinuxHeadlessSimulation: QUANTUM_LOGLEVEL_DEBUG
+    Nintendo Switch: QUANTUM_LOGLEVEL_DEBUG
+    PS4: QUANTUM_LOGLEVEL_DEBUG
+    PS5: QUANTUM_LOGLEVEL_DEBUG
+    QNX: QUANTUM_LOGLEVEL_DEBUG
+    ReservedCFE: QUANTUM_LOGLEVEL_DEBUG
+    Standalone: QUANTUM_LOGLEVEL_DEBUG
+    VisionOS: QUANTUM_LOGLEVEL_DEBUG
+    WebGL: QUANTUM_LOGLEVEL_DEBUG
+    Windows Store Apps: QUANTUM_LOGLEVEL_DEBUG
+    XboxOne: QUANTUM_LOGLEVEL_DEBUG
+    iPhone: QUANTUM_LOGLEVEL_DEBUG
+    tvOS: QUANTUM_LOGLEVEL_DEBUG
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
