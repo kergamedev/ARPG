@@ -18,3 +18,17 @@ MonoBehaviour:
       Value: 295751485452835506
   <MoveSpeed>k__BackingField:
     RawValue: 425984
+  <RunThreshold>k__BackingField:
+    RawValue: 49152
+  <WalkSpeedFactor>k__BackingField:
+    RawValue: 32768
+  <DashSpeed>k__BackingField:
+    RawValue: 98304
+  <DashCooldown>k__BackingField:
+    RawValue: 39322
+  <DashDistance>k__BackingField:
+    RawValue: 196608
+  <MaxDashLookAhead>k__BackingField:
+    RawValue: 393216
+  <DashLookAheadIncrement>k__BackingField:
+    RawValue: 32768

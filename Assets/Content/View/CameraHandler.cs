@@ -1,69 +1,93 @@
 ﻿using Quantum;
-using Unity.Cinemachine;
 using UnityEngine;
 
-[RequireComponent(typeof(CinemachineCamera))]
+[RequireComponent(typeof(Camera))]
 public class CameraHandler : MonoBehaviour
 {
     [SerializeField]
     private QuantumEntityViewUpdater _viewUpdater;
 
     [SerializeField]
-    private float _lookAhead;
+    private Vector3 _baseTargetOffset;
 
     [SerializeField]
-    private float _lookAheadSmoothing;
+    private float _distanceFromTarget;
 
-    private EntityRef _playerRef;
-    private CinemachineCamera _cinemachine;
-    private Vector3 _worldOffset;
-    private Vector3 _worldOffsetSmoothingVelocity;
-    private CinemachineCameraOffset _cinemachineLookAhead;
+    [SerializeField]
+    private float _localFollowDamping;
+
+    [SerializeField]
+    private float _globalFollowDamping;
+
+    [SerializeField, Range(0.0f, 1.0f)]
+    private float _localToGlobalBlend;
+
+    [SerializeField]
+    private float _horizontalOrbitalAngle;
+
+    [SerializeField]
+    private float _verticalOrbitalAngle;
+
+    [SerializeField]
+    private float _lookAheadDistance;
+
+    [SerializeField]
+    private float _lookAheadDamping;
+
+    private EntityRef _targetRef;
+    private Camera _camera;
+    private Vector3 _lookAheadVelocity;
+    private Vector3 _lookAhead;
+    private Vector3 _localFollow;
+    private Vector3 _localFollowVelocity;
+    private Vector3 _globalFollow;
+    private Vector3 _globalFollowVelocity;
+    private Vector3 _lastTargetPosition;
 
     private void Awake()
     {
-        _cinemachine = GetComponent<CinemachineCamera>();
-        _cinemachineLookAhead = GetComponent<CinemachineCameraOffset>();
+        _camera = GetComponent<Camera>();
+
+        _localFollow = transform.position;
+        _globalFollow = transform.position;
     }
 
     private void OnEnable()
     {
         QuantumEvent.Subscribe<EventPlayerSpawned>(this, OnPlayerSpawned, onlyIfActiveAndEnabled: true);
-        QuantumCallback.Subscribe<CallbackUpdateView>(this, OnViewUpdate);
     }
 
-    private void OnViewUpdate(CallbackUpdateView callback)
+    private void LateUpdate()
     {
-        if (!_playerRef.IsValid)
+        if (!_targetRef.IsValid)
             return;
 
-        if (!callback.Game.Frames.PreviousUpdatePredicted.TryGet(_playerRef, out Transform3D previousTransform))
-            return;
+        var targetView = _viewUpdater.GetView(_targetRef);
+        var targetDelta = targetView.transform.position - _lastTargetPosition;
 
-        if (!callback.Game.Frames.Predicted.TryGet(_playerRef, out Transform3D currentTransform))
-            return;
+        var targetHasMoved = !Mathf.Approximately(targetDelta.magnitude, 0.0f);
+        if (!Mathf.Approximately(targetDelta.magnitude, 0.0f))
+        {
+            var lookAheadGoal = targetDelta.normalized * _lookAheadDistance;
+            _lookAhead = Vector3.SmoothDamp(_lookAhead, lookAheadGoal, ref _lookAheadVelocity, _lookAheadDamping, float.MaxValue, Time.deltaTime);
+        }
 
-        var worldDelta = (currentTransform.Position - previousTransform.Position).ToUnityVector3();
-        if (Mathf.Approximately(worldDelta.magnitude, 0.0f))
-            return;
+        var spring = Quaternion.Euler(_horizontalOrbitalAngle, _verticalOrbitalAngle, 0.0f) * Vector3.forward;
+        _camera.transform.rotation = Quaternion.LookRotation(-spring);
 
-        var targetWorldOffset = worldDelta.normalized * _lookAhead;
-        _worldOffset = Vector3.SmoothDamp(_worldOffset, targetWorldOffset, ref _worldOffsetSmoothingVelocity, _lookAheadSmoothing);
+        var localFollowGoal = _baseTargetOffset + _lookAhead + (spring * _distanceFromTarget);
+        _localFollow = Vector3.SmoothDamp(_localFollow, localFollowGoal, ref _localFollowVelocity, _localFollowDamping, float.MaxValue, Time.deltaTime);
 
-        var forward = Vector3.ProjectOnPlane(transform.forward, Vector3.up);
-        var axisAlignedOffset = Quaternion.Inverse(Quaternion.FromToRotation(Vector3.forward, forward)) * _worldOffset;
-        _cinemachineLookAhead.Offset = new Vector3(axisAlignedOffset.x, axisAlignedOffset.z, axisAlignedOffset.z);
+        var globalFollowGoal = targetView.transform.position + localFollowGoal;
+        _globalFollow = Vector3.SmoothDamp(_globalFollow, globalFollowGoal, ref _globalFollowVelocity, _globalFollowDamping, float.MaxValue, Time.deltaTime);
+
+        _camera.transform.position = Vector3.Lerp(targetView.transform.position + _localFollow, _globalFollow, _localToGlobalBlend);
+        _lastTargetPosition = targetView.transform.position;
     }
 
     private void OnPlayerSpawned(EventPlayerSpawned evt)
     {
-        if (!evt.Game.PlayerIsLocal(evt.Player))
-            return;
-
-        _playerRef = evt.Entity;
-
-        var view = _viewUpdater.GetView(evt.Entity);
-        _cinemachine.Target = new CameraTarget() { TrackingTarget = view.transform };
-        _cinemachine.enabled = true;
+        if (evt.Game.PlayerIsLocal(evt.Owner))
+            _targetRef = evt.Entity;
     }
 }

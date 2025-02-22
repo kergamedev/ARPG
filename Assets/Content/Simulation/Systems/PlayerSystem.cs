@@ -1,6 +1,6 @@
 using Photon.Deterministic;
+using Quantum.Physics3D;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.Scripting;
 
 namespace Quantum
@@ -11,48 +11,146 @@ namespace Quantum
         public struct Filter
         {
             public EntityRef Entity;
+            public PlayerInfo* Player;
+            public StateMachine* StateMachine;
             public Transform3D* Transform;
-            public PlayerLink* Player;
+        }
+
+        private readonly struct ExecutionContext
+        {
+            public readonly GameConfig GameConfig;
+            public readonly PlayerConfig PlayerConfig;
+            public readonly NavMesh NavMesh;
+            public readonly Hit3D? CurrentPositionInfo;
+
+            public ExecutionContext(Frame f, in Filter filter)
+            {
+                GameConfig = f.RuntimeConfig.GetGameConfig(f);
+                PlayerConfig = f.RuntimeConfig.GetPlayerConfig(f);
+                NavMesh = f.Map.NavMeshes.First().Value;
+                CurrentPositionInfo = f.Physics3D.Raycast(filter.Transform->Position + FPVector3.Up * 50, FPVector3.Down, 100, f.RuntimeConfig.GetGameConfig(f).FloorMask, QueryOptions.HitStatics | QueryOptions.ComputeDetailedInfo);
+            }
         }
 
         public override void Update(Frame f, ref Filter filter)
         {
             var input = default(Input*);
-            if (f.Unsafe.TryGetPointer(filter.Entity, out PlayerLink* playerLink))
-                input = f.GetPlayerInput(playerLink->Player);
+            if (f.Unsafe.TryGetPointer(filter.Entity, out PlayerInfo* playerInfo))
+                input = f.GetPlayerInput(playerInfo->Owner);
 
-            if (input->Move.X != 0 || input->Move.Y != 0)
-            {
-                var playerConfig = f.RuntimeConfig.GetPlayerConfig(f);
+            var context = new ExecutionContext(f, in filter);
 
-                var moveSpeed = playerConfig.MoveSpeed;
-                var start = filter.Transform->Position;
-                var startHit = f.Physics3D.Raycast(start + FPVector3.Up * 50, FPVector3.Down, 100, f.RuntimeConfig.GetGameConfig(f).FloorMask, QueryOptions.HitStatics | QueryOptions.ComputeDetailedInfo);
-                if (startHit != null)
-                    moveSpeed *= FPMath.Clamp01(FPVector3.Dot(FPVector3.Up, startHit.Value.Normal));
+            if (filter.StateMachine->State == State.Locomotion)
+                UpdateMovement(f, ref filter, input, context);
 
-                var end = start + (input->Move * moveSpeed * f.DeltaTime).XOY;
-                
-                var navmesh = f.Map.NavMeshes.First().Value;
-                end = navmesh.MovePositionIntoNavmesh(f, start.XZ, end.XZ, 1, NavMeshRegionMask.Default).XOY;
-
-                var endHit = f.Physics3D.Raycast(end + FPVector3.Up * 50, FPVector3.Down, 100, f.RuntimeConfig.GetGameConfig(f).FloorMask, QueryOptions.HitStatics);
-                if (endHit != null)
-                    end.Y = endHit.Value.Point.Y;
-
-                filter.Transform->Position = end;
-                filter.Transform->Rotation = FPQuaternion.FromToRotation(FPVector3.Forward, input->Move.XOY.Normalized);
-            }
+            if (filter.StateMachine->State != State.Dashing && input->Dash.WasPressed)
+                TryPerformDash(f, ref filter, input, context);
         }
+
+        private void UpdateMovement(Frame f, ref Filter filter, Input* input, in ExecutionContext context)
+        {
+            if (input->Move.X == 0 && input->Move.Y == 0)
+                return;
+
+            var moveSpeed = context.PlayerConfig.MoveSpeed;
+            if (input->Move.Magnitude < context.PlayerConfig.RunThreshold)
+                moveSpeed *= context.PlayerConfig.WalkSpeedFactor;
+
+            if (context.CurrentPositionInfo != null)
+                moveSpeed *= FPMath.Clamp01(FPVector3.Dot(FPVector3.Up, context.CurrentPositionInfo.Value.Normal));
+
+            var end = filter.Transform->Position + (input->Move.Normalized * moveSpeed * f.DeltaTime).XOY;       
+            end = Navmesh2DToWorld(f, context.NavMesh.MovePositionIntoNavmesh(f, filter.Transform->Position.XZ, end.XZ, 1, NavMeshRegionMask.Default));
+
+            filter.Transform->Position = end;
+            filter.Transform->Rotation = FPQuaternion.FromToRotation(FPVector3.Forward, input->Move.XOY.Normalized);
+        }
+
+        private void TryPerformDash(Frame f, ref Filter filter, Input* input, in ExecutionContext context)
+        {
+            var up = FPVector3.Up;
+            if (context.CurrentPositionInfo != null)
+                up = context.CurrentPositionInfo.Value.Normal;
+
+            var direction = FPVector3.ProjectOnPlane(filter.Transform->Forward, up).Normalized;
+            var end = filter.Transform->Position + direction * context.PlayerConfig.DashDistance;
+
+            var canDash = false;
+            var correction = context.NavMesh.MovePositionIntoNavmesh(f, filter.Transform->Position.XZ, end.XZ, 1, NavMeshRegionMask.Default);
+
+            if (correction != end.XZ)
+            {
+                var remainingLookAhead = context.PlayerConfig.MaxDashLookAhead;
+                while (remainingLookAhead > 0)
+                {
+                    end += direction * context.PlayerConfig.DashLookAheadIncrement;
+                    remainingLookAhead -= context.PlayerConfig.DashLookAheadIncrement;
+
+                    var groundCheck = f.Physics3D.Raycast(end + FPVector3.Up * 50, FPVector3.Down, 100, f.RuntimeConfig.GetGameConfig(f).FloorMask, QueryOptions.HitStatics);
+                    if (groundCheck != null)
+                    {
+                        if (context.NavMesh.Contains(end, NavMeshRegionMask.Default))
+                        {
+                            canDash = true;
+                            break;
+                        }
+                        else if (context.NavMesh.FindClosestTriangle(f, end, context.NavMesh.MinAgentRadius, NavMeshRegionMask.Default, out _, out var closestPoint))
+                        {
+                            end = closestPoint;
+                            canDash = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            else canDash = true;
+
+            if (!canDash)
+                return;
+
+            var elapsedTimeSinceLastDash = (f.Number - filter.Player->LastDashTick) * f.DeltaTime;
+            var isLookAheadDash = !f.Navigation.LineOfSight(filter.Transform->Position.XZ, end.XZ, NavMeshRegionMask.Default, context.NavMesh);
+
+            if (elapsedTimeSinceLastDash < context.PlayerConfig.DashCooldown && !isLookAheadDash)
+                return;
+
+            f.Add(filter.Entity,
+                new Dash()
+                {
+                    Destination = Navmesh2DToWorld(f, end.XZ),
+                    Speed = context.PlayerConfig.DashSpeed
+                });
+
+            filter.Player->LastDashTick = f.Number;
+        }
+
+        #region Callbacks
 
         void ISignalOnPlayerAdded.OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
         {
             var playerData = f.GetPlayerData(player);
             var playerPrototype = f.FindAsset(playerData.PlayerAvatar);
             var playerEntity = f.Create(playerPrototype);
-            f.Add(playerEntity, new PlayerLink() { Player = player });
+            f.Add(playerEntity, new PlayerInfo() { Owner = player });
 
             f.Events.PlayerSpawned(player, playerEntity);
         }
+
+        #endregion
+
+        #region Utility
+
+        private FPVector3 Navmesh2DToWorld(Frame f, FPVector2 position2D)
+        {
+            var position3D = position2D.XOY;
+
+            var endHit = f.Physics3D.Raycast(position3D + FPVector3.Up * 50, FPVector3.Down, 100, f.RuntimeConfig.GetGameConfig(f).FloorMask, QueryOptions.HitStatics);
+            if (endHit != null)
+                position3D.Y = endHit.Value.Point.Y;
+
+            return position3D;
+        }
+
+        #endregion
     }
 }

@@ -65,10 +65,10 @@ namespace Quantum {
           default: break;
         }
       }
-      public EventPlayerSpawned PlayerSpawned(PlayerRef Player, EntityRef Entity) {
+      public EventPlayerSpawned PlayerSpawned(PlayerRef Owner, EntityRef Entity) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventPlayerSpawned>(EventPlayerSpawned.ID);
-        ev.Player = Player;
+        ev.Owner = Owner;
         ev.Entity = Entity;
         _f.AddEvent(ev);
         return ev;
@@ -77,7 +77,7 @@ namespace Quantum {
   }
   public unsafe partial class EventPlayerSpawned : EventBase {
     public new const Int32 ID = 1;
-    public PlayerRef Player;
+    public PlayerRef Owner;
     public EntityRef Entity;
     protected EventPlayerSpawned(Int32 id, EventFlags flags) : 
         base(id, flags) {
@@ -96,7 +96,7 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 41;
-        hash = hash * 31 + Player.GetHashCode();
+        hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + Entity.GetHashCode();
         return hash;
       }

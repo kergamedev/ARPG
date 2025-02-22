@@ -255,7 +255,7 @@
             Pointer to the entity's ship component.
             </summary>
         </member>
-        <member name="F:Quantum.Asteroids.AsteroidsShipSystem.Filter.PlayerLink">
+        <member name="F:Quantum.Asteroids.AsteroidsShipSystem.Filter.Player">
             <summary>
             Pointer to the entity's player link component.
             </summary>

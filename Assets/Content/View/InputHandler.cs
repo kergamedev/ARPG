@@ -8,6 +8,9 @@ public class InputHandler : MonoBehaviour
     [SerializeField]
     private InputActionReference _moveInput;
 
+    [SerializeField]
+    private InputActionReference _dashInput;
+
     private void OnEnable()
     {
         QuantumCallback.Subscribe<CallbackPollInput>(this, PollInput);
@@ -18,6 +21,7 @@ public class InputHandler : MonoBehaviour
         var i = new Quantum.Input();
 
         i.Move = ComputeMoveInput();
+        i.Dash = _dashInput.action.ReadValue<float>() != 0;
 
         callback.SetInput(i, DeterministicInputFlags.Repeatable);
     }

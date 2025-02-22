@@ -50,27 +50,63 @@ namespace Quantum.Prototypes {
   #endif //;
   
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
-  public unsafe partial class InputPrototype : StructPrototype {
-    public FPVector2 Move;
-    partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
-    public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
-        result.Move = this.Move;
+  [Quantum.Prototypes.Prototype(typeof(Quantum.Dash))]
+  public unsafe partial class DashPrototype : ComponentPrototype<Quantum.Dash> {
+    public FPVector3 Destination;
+    public FP Speed;
+    partial void MaterializeUser(Frame frame, ref Quantum.Dash result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.Dash component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.Dash result, in PrototypeMaterializationContext context = default) {
+        result.Destination = this.Destination;
+        result.Speed = this.Speed;
         MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerLink))]
-  public unsafe partial class PlayerLinkPrototype : ComponentPrototype<Quantum.PlayerLink> {
-    public PlayerRef Player;
-    partial void MaterializeUser(Frame frame, ref Quantum.PlayerLink result, in PrototypeMaterializationContext context);
+  [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
+  public unsafe partial class InputPrototype : StructPrototype {
+    public FPVector2 Move;
+    public Button Dash;
+    partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
+        result.Move = this.Move;
+        result.Dash = this.Dash;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerInfo))]
+  public unsafe partial class PlayerInfoPrototype : ComponentPrototype<Quantum.PlayerInfo> {
+    public PlayerRef Owner;
+    public Int32 LastDashTick;
+    partial void MaterializeUser(Frame frame, ref Quantum.PlayerInfo result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.PlayerLink component = default;
+        Quantum.PlayerInfo component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
-    public void Materialize(Frame frame, ref Quantum.PlayerLink result, in PrototypeMaterializationContext context = default) {
-        result.Player = this.Player;
+    public void Materialize(Frame frame, ref Quantum.PlayerInfo result, in PrototypeMaterializationContext context = default) {
+        result.Owner = this.Owner;
+        result.LastDashTick = this.LastDashTick;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.StateMachine))]
+  public unsafe partial class StateMachinePrototype : ComponentPrototype<Quantum.StateMachine> {
+    public Quantum.QEnum32<State> State;
+    partial void MaterializeUser(Frame frame, ref Quantum.StateMachine result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.StateMachine component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.StateMachine result, in PrototypeMaterializationContext context = default) {
+        result.State = this.State;
         MaterializeUser(frame, ref result, in context);
     }
   }

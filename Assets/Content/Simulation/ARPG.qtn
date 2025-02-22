@@ -2,17 +2,37 @@
 input
 {
     FPVector2 Move;
+    button Dash;
 }
 
 // ---COMPONENTS---
-component PlayerLink
+component PlayerInfo
 {
-    player_ref Player;
+    player_ref Owner;
+    Int32 LastDashTick;
+}
+
+component StateMachine
+{
+    State State;
+}
+
+component Dash
+{
+    FPVector3 Destination;
+    FP Speed;
+}
+
+// ---TYPES---
+enum State
+{
+    Locomotion,
+    Dashing
 }
 
 // ---EVENTS---
 synced event PlayerSpawned
 {
-    player_ref Player;
+    player_ref Owner;
     entity_ref Entity;
 }
