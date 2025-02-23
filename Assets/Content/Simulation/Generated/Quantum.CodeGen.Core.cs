@@ -50,10 +50,12 @@ namespace Quantum {
   #endif //;
   
   public enum CharacterState : int {
+    None,
     Locomotion,
     Dashing,
   }
   public enum LocomotionKind : int {
+    NotInLocomotion,
     Idle,
     Walk,
     Run,
@@ -517,16 +519,22 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Character : Quantum.IComponent {
-    public const Int32 SIZE = 8;
+    public const Int32 SIZE = 12;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
+    [ExcludeFromPrototype()]
     public CharacterState State;
     [FieldOffset(4)]
+    [ExcludeFromPrototype()]
+    public LocomotionKind OngoingLocomotion;
+    [FieldOffset(8)]
+    [ExcludeFromPrototype()]
     public QBoolean CanSprint;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 13711;
         hash = hash * 31 + (Int32)State;
+        hash = hash * 31 + (Int32)OngoingLocomotion;
         hash = hash * 31 + CanSprint.GetHashCode();
         return hash;
       }
@@ -534,6 +542,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Character*)ptr;
         serializer.Stream.Serialize((Int32*)&p->State);
+        serializer.Stream.Serialize((Int32*)&p->OngoingLocomotion);
         QBoolean.Serialize(&p->CanSprint, serializer);
     }
   }

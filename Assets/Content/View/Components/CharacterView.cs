@@ -1,19 +1,19 @@
 using Quantum;
+using System;
 using UnityEngine;
 
 public class CharacterView : QuantumEntityViewComponent
 {
-    private static readonly int IS_WALKING = Animator.StringToHash("IsWalking");
-    private static readonly int IS_RUNNING = Animator.StringToHash("IsRunning");
-    private static readonly int IS_SPRINTING = Animator.StringToHash("IsSprinting");
-    private static readonly int ACTION_KIND = Animator.StringToHash("ActionKind");
-
-    [SerializeField]
-    private Animator _animator;
+    private static readonly int ANIM_IDLE = Animator.StringToHash("Main.Idle");
+    private static readonly int ANIM_WALK = Animator.StringToHash("Main.Walk");
+    private static readonly int ANIM_RUN = Animator.StringToHash("Main.Run");
+    private static readonly int ANIM_SPRINT = Animator.StringToHash("Main.Sprint");
+    private static readonly int ANIM_DASH = Animator.StringToHash("Main.Dash");
 
     [SerializeField]
     private float _rotationSmoothing;
 
+    [Header("Dash")]
     [SerializeField]
     private ParticleSystem _dashVFXPrefab;
 
@@ -23,67 +23,85 @@ public class CharacterView : QuantumEntityViewComponent
     [SerializeField]
     private Vector3 _dashVFXSpawnOffset;
 
+    private Animator _animator;
+    private CharacterState _lastCharacterState;
+    private LocomotionKind _lastOngoingLocomotion;
     Quaternion _rotation;
+
 
     public override void OnInitialize()
     {
+        _animator = GetComponentInChildren<Animator>();
         _rotation = transform.parent.rotation;
 
-        QuantumEvent.Subscribe<EventCharacterMoved>(this, OnCharacterMoved, onlyIfActiveAndEnabled: true);
         QuantumEvent.Subscribe<EventCharacterDashed>(this, OnCharacterDashed, onlyIfActiveAndEnabled: true);
     }
 
-    private void OnCharacterMoved(EventCharacterMoved evt)
+    public override void OnUpdateView()
     {
-        if (evt.Character != EntityRef)
-            return;
+        var character = PredictedFrame.Get<Character>(EntityRef);
+        var changedStateThisTick = character.State != _lastCharacterState;
 
-        if (PredictedFrame.Has<DashAction>(EntityRef))
+        switch (character.State)
         {
-            _animator.SetBool(IS_WALKING, false);
-            _animator.SetBool(IS_RUNNING, false);
-            _animator.SetBool(IS_SPRINTING, false);
-            _animator.SetInteger(ACTION_KIND, 2);
+            case CharacterState.Locomotion:
+                UpdateLocomotionAnimations(character, changedStateThisTick);
+                break;
+
+            case CharacterState.Dashing:
+                UpdateDashAnimations(character, changedStateThisTick);
+                break;
         }
-        else SetAnimatorLocomotion(evt.LocomotionKind);
+
+        _lastCharacterState = character.State;
     }
 
-    private void SetAnimatorLocomotion(LocomotionKind locomotionKind)
+    private void UpdateLocomotionAnimations(Character character, bool changedStateThisTick)
     {
-        switch (locomotionKind)
+        var ongoingLocomotion = character.OngoingLocomotion;
+        if (changedStateThisTick || ongoingLocomotion != _lastOngoingLocomotion)
         {
-            case LocomotionKind.Idle:
-                _animator.SetBool(IS_WALKING, false);
-                _animator.SetBool(IS_RUNNING, false);
-                _animator.SetBool(IS_SPRINTING, false);
-                _animator.SetInteger(ACTION_KIND, 0);
-                break;
+            var locomotionAnim = default(int);
+            switch (character.OngoingLocomotion)
+            {
+                case LocomotionKind.Idle:
+                    locomotionAnim = ANIM_IDLE;
+                    break;
 
-            case LocomotionKind.Walk:
-                _animator.SetBool(IS_WALKING, true);
-                _animator.SetBool(IS_RUNNING, false);
-                _animator.SetBool(IS_SPRINTING, false);
-                _animator.SetInteger(ACTION_KIND, 1);
-                break;
+                case LocomotionKind.Walk:
+                    locomotionAnim = ANIM_WALK;
+                    break;
 
-            case LocomotionKind.Run:
-                _animator.SetBool(IS_WALKING, false);
-                _animator.SetBool(IS_RUNNING, true);
-                _animator.SetBool(IS_SPRINTING, false);
-                _animator.SetInteger(ACTION_KIND, 1);
-                break;
+                case LocomotionKind.Run:
+                    locomotionAnim = ANIM_RUN;
+                    break;
 
-            case LocomotionKind.Sprint:
-                _animator.SetBool(IS_WALKING, false);
-                _animator.SetBool(IS_RUNNING, false);
-                _animator.SetBool(IS_SPRINTING, true);
-                _animator.SetInteger(ACTION_KIND, 1);
-                break;
+                case LocomotionKind.Sprint:
+                    locomotionAnim = ANIM_SPRINT;
+                    break;
+
+                default: throw new Exception($"Unexpected '{nameof(LocomotionKind)}={character.OngoingLocomotion}'");
+            }
+
+            _animator.CrossFadeInFixedTime(locomotionAnim, 0.125f);
         }
+
+        _lastOngoingLocomotion = ongoingLocomotion;
+    }
+
+    private void UpdateDashAnimations(Character character, bool changedStateThisTick)
+    {
+        if (!changedStateThisTick)
+            return;
+
+        _animator.PlayInFixedTime(ANIM_DASH);
     }
 
     private void OnCharacterDashed(EventCharacterDashed evt)
     {
+        if (evt.Character != EntityRef)
+            return;
+
         if (!PredictedFrame.TryGet(evt.Character, out DashAction dash))
             return;
 

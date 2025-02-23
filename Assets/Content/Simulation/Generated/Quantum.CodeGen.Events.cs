@@ -52,7 +52,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 4;
+        eventCount = 3;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -62,7 +62,6 @@ namespace Quantum {
       static partial void GetEventTypeCodeGen(Int32 eventID, ref System.Type result) {
         switch (eventID) {
           case EventPlayerCharacterSpawned.ID: result = typeof(EventPlayerCharacterSpawned); return;
-          case EventCharacterMoved.ID: result = typeof(EventCharacterMoved); return;
           case EventCharacterDashed.ID: result = typeof(EventCharacterDashed); return;
           default: break;
         }
@@ -72,15 +71,6 @@ namespace Quantum {
         var ev = _f.Context.AcquireEvent<EventPlayerCharacterSpawned>(EventPlayerCharacterSpawned.ID);
         ev.Player = Player;
         ev.Character = Character;
-        _f.AddEvent(ev);
-        return ev;
-      }
-      public EventCharacterMoved CharacterMoved(EntityRef Character, LocomotionKind LocomotionKind, FPVector3 StartingPosition, FPVector3 Delta) {
-        var ev = _f.Context.AcquireEvent<EventCharacterMoved>(EventCharacterMoved.ID);
-        ev.Character = Character;
-        ev.LocomotionKind = LocomotionKind;
-        ev.StartingPosition = StartingPosition;
-        ev.Delta = Delta;
         _f.AddEvent(ev);
         return ev;
       }
@@ -120,16 +110,14 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventCharacterMoved : EventBase {
+  public unsafe partial class EventCharacterDashed : EventBase {
     public new const Int32 ID = 2;
     public EntityRef Character;
-    public LocomotionKind LocomotionKind;
-    public FPVector3 StartingPosition;
-    public FPVector3 Delta;
-    protected EventCharacterMoved(Int32 id, EventFlags flags) : 
+    public FPVector3 Start;
+    protected EventCharacterDashed(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventCharacterMoved() : 
+    public EventCharacterDashed() : 
         base(2, EventFlags.Server|EventFlags.Client) {
     }
     public new QuantumGame Game {
@@ -143,35 +131,6 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 43;
-        hash = hash * 31 + Character.GetHashCode();
-        hash = hash * 31 + LocomotionKind.GetHashCode();
-        hash = hash * 31 + StartingPosition.GetHashCode();
-        hash = hash * 31 + Delta.GetHashCode();
-        return hash;
-      }
-    }
-  }
-  public unsafe partial class EventCharacterDashed : EventBase {
-    public new const Int32 ID = 3;
-    public EntityRef Character;
-    public FPVector3 Start;
-    protected EventCharacterDashed(Int32 id, EventFlags flags) : 
-        base(id, flags) {
-    }
-    public EventCharacterDashed() : 
-        base(3, EventFlags.Server|EventFlags.Client) {
-    }
-    public new QuantumGame Game {
-      get {
-        return (QuantumGame)base.Game;
-      }
-      set {
-        base.Game = value;
-      }
-    }
-    public override Int32 GetHashCode() {
-      unchecked {
-        var hash = 47;
         hash = hash * 31 + Character.GetHashCode();
         hash = hash * 31 + Start.GetHashCode();
         return hash;

@@ -651,10 +651,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    State:
-      Value: 0
-    CanSprint:
-      Value: 0
+    _empty_prototype_dummy_field_: 0
 --- !u!1 &1950920212754559127
 GameObject:
   m_ObjectHideFlags: 0
@@ -1179,7 +1176,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d3cd84828eeae84b98c7cde63debc4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 5020735273416978584}
   _rotationSmoothing: 22.5
   _dashVFXPrefab: {fileID: 7920267451389747062, guid: f66b5a7fc5e43374fa9970d0f88f61ff, type: 3}
   _dashVFXHeightOffset: 1.25
@@ -1194,7 +1190,7 @@ Animator:
   m_GameObject: {fileID: 4394077986073552504}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3224b149eed7f994ca81112281386c68, type: 2}
+  m_Controller: {fileID: 9100000, guid: 89b8b4173219a52468f139febc3555ab, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

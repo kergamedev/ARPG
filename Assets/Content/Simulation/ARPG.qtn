@@ -14,7 +14,13 @@ component PlayerCharacter
 
 component Character
 {
+    [ExcludeFromPrototype]
     CharacterState State;
+
+    [ExcludeFromPrototype]
+    LocomotionKind OngoingLocomotion;
+
+    [ExcludeFromPrototype]
     bool CanSprint;
 }
 
@@ -27,12 +33,16 @@ component DashAction
 // ---TYPES---
 enum CharacterState
 {
+    None,
+
     Locomotion,
     Dashing
 }
 
 enum LocomotionKind
 {
+    NotInLocomotion,
+
     Idle,
     Walk,
     Run,
@@ -44,14 +54,6 @@ synced event PlayerCharacterSpawned
 {
     player_ref Player;
     entity_ref Character;
-}
-
-event CharacterMoved
-{
-    entity_ref Character;
-    LocomotionKind LocomotionKind;
-    FPVector3 StartingPosition;
-    FPVector3 Delta;
 }
 
 event CharacterDashed

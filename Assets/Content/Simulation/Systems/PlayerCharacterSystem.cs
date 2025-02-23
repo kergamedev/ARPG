@@ -50,8 +50,8 @@ namespace Quantum
 
             if (input->Move.X == 0 && input->Move.Y == 0)
             {
+                filter.Character->OngoingLocomotion = LocomotionKind.Idle;
                 filter.Character->CanSprint = false;
-                f.Events.CharacterMoved(filter.Entity, LocomotionKind.Idle, start, FPVector3.Zero);
                 return;
             }
 
@@ -77,8 +77,7 @@ namespace Quantum
 
             filter.Transform->Position = end;
             filter.Transform->Rotation = FPQuaternion.FromToRotation(FPVector3.Forward, input->Move.XOY.Normalized);
-
-            f.Events.CharacterMoved(filter.Entity, locomotionKind, start, end - start);
+            filter.Character->OngoingLocomotion = locomotionKind;
         }
 
         private void TryPerformDash(Frame f, ref Filter filter, Input* input, in ExecutionContext context)
@@ -129,17 +128,8 @@ namespace Quantum
             if (elapsedTimeSinceLastDash < context.PlayerConfig.DashCooldown && !isLookAheadDash)
                 return;
 
-            f.Add(filter.Entity,
-                new DashAction()
-                {
-                    Destination = Navmesh2DToWorld(f, end.XZ),
-                    Speed = context.PlayerConfig.DashSpeed
-                });
-
-            filter.Character->CanSprint = true;
+            CharacterDashSystem.Perform(f, filter.Entity, Navmesh2DToWorld(f, end.XZ), context.PlayerConfig.DashSpeed);
             filter.Player->LastDashTick = f.Number;
-
-            f.Events.CharacterDashed(filter.Entity, filter.Transform->Position);
         }
 
         #region Callbacks
