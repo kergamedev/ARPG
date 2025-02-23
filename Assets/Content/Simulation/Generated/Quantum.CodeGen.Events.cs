@@ -52,7 +52,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 2;
+        eventCount = 4;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -61,28 +61,46 @@ namespace Quantum {
       }
       static partial void GetEventTypeCodeGen(Int32 eventID, ref System.Type result) {
         switch (eventID) {
-          case EventPlayerSpawned.ID: result = typeof(EventPlayerSpawned); return;
+          case EventPlayerCharacterSpawned.ID: result = typeof(EventPlayerCharacterSpawned); return;
+          case EventCharacterMoved.ID: result = typeof(EventCharacterMoved); return;
+          case EventCharacterDashed.ID: result = typeof(EventCharacterDashed); return;
           default: break;
         }
       }
-      public EventPlayerSpawned PlayerSpawned(PlayerRef Owner, EntityRef Entity) {
+      public EventPlayerCharacterSpawned PlayerCharacterSpawned(PlayerRef Player, EntityRef Character) {
         if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventPlayerSpawned>(EventPlayerSpawned.ID);
-        ev.Owner = Owner;
-        ev.Entity = Entity;
+        var ev = _f.Context.AcquireEvent<EventPlayerCharacterSpawned>(EventPlayerCharacterSpawned.ID);
+        ev.Player = Player;
+        ev.Character = Character;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventCharacterMoved CharacterMoved(EntityRef Character, LocomotionKind LocomotionKind, FPVector3 StartingPosition, FPVector3 Delta) {
+        var ev = _f.Context.AcquireEvent<EventCharacterMoved>(EventCharacterMoved.ID);
+        ev.Character = Character;
+        ev.LocomotionKind = LocomotionKind;
+        ev.StartingPosition = StartingPosition;
+        ev.Delta = Delta;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventCharacterDashed CharacterDashed(EntityRef Character, FPVector3 Start) {
+        var ev = _f.Context.AcquireEvent<EventCharacterDashed>(EventCharacterDashed.ID);
+        ev.Character = Character;
+        ev.Start = Start;
         _f.AddEvent(ev);
         return ev;
       }
     }
   }
-  public unsafe partial class EventPlayerSpawned : EventBase {
+  public unsafe partial class EventPlayerCharacterSpawned : EventBase {
     public new const Int32 ID = 1;
-    public PlayerRef Owner;
-    public EntityRef Entity;
-    protected EventPlayerSpawned(Int32 id, EventFlags flags) : 
+    public PlayerRef Player;
+    public EntityRef Character;
+    protected EventPlayerCharacterSpawned(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventPlayerSpawned() : 
+    public EventPlayerCharacterSpawned() : 
         base(1, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -96,8 +114,66 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 41;
-        hash = hash * 31 + Owner.GetHashCode();
-        hash = hash * 31 + Entity.GetHashCode();
+        hash = hash * 31 + Player.GetHashCode();
+        hash = hash * 31 + Character.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventCharacterMoved : EventBase {
+    public new const Int32 ID = 2;
+    public EntityRef Character;
+    public LocomotionKind LocomotionKind;
+    public FPVector3 StartingPosition;
+    public FPVector3 Delta;
+    protected EventCharacterMoved(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventCharacterMoved() : 
+        base(2, EventFlags.Server|EventFlags.Client) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 43;
+        hash = hash * 31 + Character.GetHashCode();
+        hash = hash * 31 + LocomotionKind.GetHashCode();
+        hash = hash * 31 + StartingPosition.GetHashCode();
+        hash = hash * 31 + Delta.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventCharacterDashed : EventBase {
+    public new const Int32 ID = 3;
+    public EntityRef Character;
+    public FPVector3 Start;
+    protected EventCharacterDashed(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventCharacterDashed() : 
+        base(3, EventFlags.Server|EventFlags.Client) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 47;
+        hash = hash * 31 + Character.GetHashCode();
+        hash = hash * 31 + Start.GetHashCode();
         return hash;
       }
     }

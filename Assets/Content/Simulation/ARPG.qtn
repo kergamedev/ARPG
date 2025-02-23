@@ -6,33 +6,56 @@ input
 }
 
 // ---COMPONENTS---
-component PlayerInfo
+component PlayerCharacter
 {
     player_ref Owner;
     Int32 LastDashTick;
 }
 
-component StateMachine
+component Character
 {
-    State State;
+    CharacterState State;
+    bool CanSprint;
 }
 
-component Dash
+component DashAction
 {
     FPVector3 Destination;
     FP Speed;
 }
 
 // ---TYPES---
-enum State
+enum CharacterState
 {
     Locomotion,
     Dashing
 }
 
-// ---EVENTS---
-synced event PlayerSpawned
+enum LocomotionKind
 {
-    player_ref Owner;
-    entity_ref Entity;
+    Idle,
+    Walk,
+    Run,
+    Sprint
+}
+
+// ---EVENTS---
+synced event PlayerCharacterSpawned
+{
+    player_ref Player;
+    entity_ref Character;
+}
+
+event CharacterMoved
+{
+    entity_ref Character;
+    LocomotionKind LocomotionKind;
+    FPVector3 StartingPosition;
+    FPVector3 Delta;
+}
+
+event CharacterDashed
+{
+    entity_ref Character;
+    FPVector3 Start;
 }

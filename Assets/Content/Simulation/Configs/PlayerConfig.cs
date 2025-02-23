@@ -15,6 +15,9 @@ namespace Quantum
         [field: SerializeField]
         public FP WalkSpeedFactor { get; private set; }
 
+        [field: SerializeField]
+        public FP SprintSpeedFactor { get; private set; }
+
         [field: Header("Dash")]
         [field: SerializeField]
         public FP DashSpeed { get; private set; }

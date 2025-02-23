@@ -34,10 +34,10 @@ public class CameraHandler : MonoBehaviour
     [SerializeField]
     private float _lookAheadDamping;
 
-    private EntityRef _targetRef;
+    private EntityRef _target;
     private Camera _camera;
-    private Vector3 _lookAheadVelocity;
     private Vector3 _lookAhead;
+    private Vector3 _lookAheadVelocity;
     private Vector3 _localFollow;
     private Vector3 _localFollowVelocity;
     private Vector3 _globalFollow;
@@ -54,15 +54,15 @@ public class CameraHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        QuantumEvent.Subscribe<EventPlayerSpawned>(this, OnPlayerSpawned, onlyIfActiveAndEnabled: true);
+        QuantumEvent.Subscribe<EventPlayerCharacterSpawned>(this, OnPlayerCharacterSpawned, onlyIfActiveAndEnabled: true);
     }
 
     private void LateUpdate()
     {
-        if (!_targetRef.IsValid)
+        if (!_target.IsValid)
             return;
 
-        var targetView = _viewUpdater.GetView(_targetRef);
+        var targetView = _viewUpdater.GetView(_target);
         var targetDelta = targetView.transform.position - _lastTargetPosition;
 
         var targetHasMoved = !Mathf.Approximately(targetDelta.magnitude, 0.0f);
@@ -85,9 +85,9 @@ public class CameraHandler : MonoBehaviour
         _lastTargetPosition = targetView.transform.position;
     }
 
-    private void OnPlayerSpawned(EventPlayerSpawned evt)
+    private void OnPlayerCharacterSpawned(EventPlayerCharacterSpawned evt)
     {
-        if (evt.Game.PlayerIsLocal(evt.Owner))
-            _targetRef = evt.Entity;
+        if (evt.Game.PlayerIsLocal(evt.Player))
+            _target = evt.Character;
     }
 }

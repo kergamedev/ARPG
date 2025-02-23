@@ -49,9 +49,15 @@ namespace Quantum {
   using RuntimeInitializeOnLoadMethodAttribute = UnityEngine.RuntimeInitializeOnLoadMethodAttribute;
   #endif //;
   
-  public enum State : int {
+  public enum CharacterState : int {
     Locomotion,
     Dashing,
+  }
+  public enum LocomotionKind : int {
+    Idle,
+    Walk,
+    Run,
+    Sprint,
   }
   [System.FlagsAttribute()]
   public enum InputButtons : int {
@@ -510,7 +516,29 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct Dash : Quantum.IComponent {
+  public unsafe partial struct Character : Quantum.IComponent {
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(0)]
+    public CharacterState State;
+    [FieldOffset(4)]
+    public QBoolean CanSprint;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 13711;
+        hash = hash * 31 + (Int32)State;
+        hash = hash * 31 + CanSprint.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (Character*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->State);
+        QBoolean.Serialize(&p->CanSprint, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct DashAction : Quantum.IComponent {
     public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
@@ -519,20 +547,20 @@ namespace Quantum {
     public FP Speed;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 2543;
+        var hash = 15877;
         hash = hash * 31 + Destination.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (Dash*)ptr;
+        var p = (DashAction*)ptr;
         FP.Serialize(&p->Speed, serializer);
         FPVector3.Serialize(&p->Destination, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct PlayerInfo : Quantum.IComponent {
+  public unsafe partial struct PlayerCharacter : Quantum.IComponent {
     public const Int32 SIZE = 8;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(4)]
@@ -541,34 +569,16 @@ namespace Quantum {
     public Int32 LastDashTick;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 13049;
+        var hash = 17027;
         hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + LastDashTick.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (PlayerInfo*)ptr;
+        var p = (PlayerCharacter*)ptr;
         serializer.Stream.Serialize(&p->LastDashTick);
         PlayerRef.Serialize(&p->Owner, serializer);
-    }
-  }
-  [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct StateMachine : Quantum.IComponent {
-    public const Int32 SIZE = 4;
-    public const Int32 ALIGNMENT = 4;
-    [FieldOffset(0)]
-    public State State;
-    public override Int32 GetHashCode() {
-      unchecked { 
-        var hash = 15913;
-        hash = hash * 31 + (Int32)State;
-        return hash;
-      }
-    }
-    public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (StateMachine*)ptr;
-        serializer.Stream.Serialize((Int32*)&p->State);
     }
   }
   public static unsafe partial class Constants {
@@ -587,12 +597,14 @@ namespace Quantum {
       Initialize(this, this.SimulationConfig.Entities, 256);
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
+      BuildSignalsArrayOnComponentAdded<Quantum.Character>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.Character>();
       BuildSignalsArrayOnComponentAdded<CharacterController2D>();
       BuildSignalsArrayOnComponentRemoved<CharacterController2D>();
       BuildSignalsArrayOnComponentAdded<CharacterController3D>();
       BuildSignalsArrayOnComponentRemoved<CharacterController3D>();
-      BuildSignalsArrayOnComponentAdded<Quantum.Dash>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.Dash>();
+      BuildSignalsArrayOnComponentAdded<Quantum.DashAction>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.DashAction>();
       BuildSignalsArrayOnComponentAdded<MapEntityLink>();
       BuildSignalsArrayOnComponentRemoved<MapEntityLink>();
       BuildSignalsArrayOnComponentAdded<NavMeshAvoidanceAgent>();
@@ -619,10 +631,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<PhysicsJoints2D>();
       BuildSignalsArrayOnComponentAdded<PhysicsJoints3D>();
       BuildSignalsArrayOnComponentRemoved<PhysicsJoints3D>();
-      BuildSignalsArrayOnComponentAdded<Quantum.PlayerInfo>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.PlayerInfo>();
-      BuildSignalsArrayOnComponentAdded<Quantum.StateMachine>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.StateMachine>();
+      BuildSignalsArrayOnComponentAdded<Quantum.PlayerCharacter>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.PlayerCharacter>();
       BuildSignalsArrayOnComponentAdded<Transform2D>();
       BuildSignalsArrayOnComponentRemoved<Transform2D>();
       BuildSignalsArrayOnComponentAdded<Transform2DVertical>();
@@ -671,12 +681,14 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BitSet6), Quantum.BitSet6.SIZE);
       typeRegistry.Register(typeof(Button), Button.SIZE);
       typeRegistry.Register(typeof(CallbackFlags), 4);
+      typeRegistry.Register(typeof(Quantum.Character), Quantum.Character.SIZE);
       typeRegistry.Register(typeof(CharacterController2D), CharacterController2D.SIZE);
       typeRegistry.Register(typeof(CharacterController3D), CharacterController3D.SIZE);
+      typeRegistry.Register(typeof(Quantum.CharacterState), 4);
       typeRegistry.Register(typeof(ColorRGBA), ColorRGBA.SIZE);
       typeRegistry.Register(typeof(ComponentPrototypeRef), ComponentPrototypeRef.SIZE);
       typeRegistry.Register(typeof(ComponentTypeRef), ComponentTypeRef.SIZE);
-      typeRegistry.Register(typeof(Quantum.Dash), Quantum.Dash.SIZE);
+      typeRegistry.Register(typeof(Quantum.DashAction), Quantum.DashAction.SIZE);
       typeRegistry.Register(typeof(DistanceJoint), DistanceJoint.SIZE);
       typeRegistry.Register(typeof(DistanceJoint3D), DistanceJoint3D.SIZE);
       typeRegistry.Register(typeof(EntityPrototypeRef), EntityPrototypeRef.SIZE);
@@ -703,6 +715,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Joint), Joint.SIZE);
       typeRegistry.Register(typeof(Joint3D), Joint3D.SIZE);
       typeRegistry.Register(typeof(LayerMask), LayerMask.SIZE);
+      typeRegistry.Register(typeof(Quantum.LocomotionKind), 4);
       typeRegistry.Register(typeof(MapEntityId), MapEntityId.SIZE);
       typeRegistry.Register(typeof(MapEntityLink), MapEntityLink.SIZE);
       typeRegistry.Register(typeof(NavMeshAvoidanceAgent), NavMeshAvoidanceAgent.SIZE);
@@ -725,7 +738,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(PhysicsJoints3D), PhysicsJoints3D.SIZE);
       typeRegistry.Register(typeof(PhysicsQueryRef), PhysicsQueryRef.SIZE);
       typeRegistry.Register(typeof(PhysicsSceneSettings), PhysicsSceneSettings.SIZE);
-      typeRegistry.Register(typeof(Quantum.PlayerInfo), Quantum.PlayerInfo.SIZE);
+      typeRegistry.Register(typeof(Quantum.PlayerCharacter), Quantum.PlayerCharacter.SIZE);
       typeRegistry.Register(typeof(PlayerRef), PlayerRef.SIZE);
       typeRegistry.Register(typeof(Ptr), Ptr.SIZE);
       typeRegistry.Register(typeof(QBoolean), QBoolean.SIZE);
@@ -736,8 +749,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(Shape3D), Shape3D.SIZE);
       typeRegistry.Register(typeof(SpringJoint), SpringJoint.SIZE);
       typeRegistry.Register(typeof(SpringJoint3D), SpringJoint3D.SIZE);
-      typeRegistry.Register(typeof(Quantum.State), 4);
-      typeRegistry.Register(typeof(Quantum.StateMachine), Quantum.StateMachine.SIZE);
       typeRegistry.Register(typeof(Transform2D), Transform2D.SIZE);
       typeRegistry.Register(typeof(Transform2DVertical), Transform2DVertical.SIZE);
       typeRegistry.Register(typeof(Transform3D), Transform3D.SIZE);
@@ -747,18 +758,19 @@ namespace Quantum {
     static partial void InitComponentTypeIdGen() {
       ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 3)
         .AddBuiltInComponents()
-        .Add<Quantum.Dash>(Quantum.Dash.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.PlayerInfo>(Quantum.PlayerInfo.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.StateMachine>(Quantum.StateMachine.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.Character>(Quantum.Character.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.DashAction>(Quantum.DashAction.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.PlayerCharacter>(Quantum.PlayerCharacter.Serialize, null, null, ComponentFlags.None)
         .Finish();
     }
     [Preserve()]
     public static void EnsureNotStrippedGen() {
       FramePrinter.EnsureNotStripped();
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.CharacterState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.LocomotionKind>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
-      FramePrinter.EnsurePrimitiveNotStripped<Quantum.State>();
     }
   }
 }
