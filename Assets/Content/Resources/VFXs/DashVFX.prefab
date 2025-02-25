@@ -4805,6 +4805,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7302234992472714949}
   - component: {fileID: 3367299756776732692}
+  - component: {fileID: 740548927287533088}
   - component: {fileID: 7920267451389747062}
   m_Layer: 0
   m_Name: DashVFX
@@ -4910,6 +4911,18 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &740548927287533088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2395053277456077934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cffa1377777b6b4ba58b09b31601b45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!198 &7920267451389747062
 ParticleSystem:
   m_ObjectHideFlags: 0

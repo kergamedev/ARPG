@@ -53,6 +53,7 @@ namespace Quantum {
     None,
     Locomotion,
     Dashing,
+    InAbility,
   }
   public enum LocomotionKind : int {
     NotInLocomotion,
@@ -64,6 +65,7 @@ namespace Quantum {
   [System.FlagsAttribute()]
   public enum InputButtons : int {
     Dash = 1 << 0,
+    UseWeapon = 1 << 1,
   }
   public static unsafe partial class FlagsExtensions {
     public static Boolean IsFlagSet(this InputButtons self, InputButtons flag) {
@@ -414,17 +416,20 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     public FPVector2 Move;
     [FieldOffset(0)]
     public Button Dash;
+    [FieldOffset(12)]
+    public Button UseWeapon;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
         hash = hash * 31 + Move.GetHashCode();
         hash = hash * 31 + Dash.GetHashCode();
+        hash = hash * 31 + UseWeapon.GetHashCode();
         return hash;
       }
     }
@@ -434,24 +439,27 @@ namespace Quantum {
     public Boolean IsDown(InputButtons button) {
       switch (button) {
         case InputButtons.Dash: return Dash.IsDown;
+        case InputButtons.UseWeapon: return UseWeapon.IsDown;
         default: return false;
       }
     }
     public Boolean WasPressed(InputButtons button) {
       switch (button) {
         case InputButtons.Dash: return Dash.WasPressed;
+        case InputButtons.UseWeapon: return UseWeapon.WasPressed;
         default: return false;
       }
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
         Button.Serialize(&p->Dash, serializer);
+        Button.Serialize(&p->UseWeapon, serializer);
         FPVector2.Serialize(&p->Move, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 760;
+    public const Int32 SIZE = 808;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -475,12 +483,12 @@ namespace Quantum {
     public Int32 PlayerConnectedCount;
     [FieldOffset(560)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[192];
-    [FieldOffset(752)]
+    private fixed Byte _input_[240];
+    [FieldOffset(800)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 32, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 40, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -518,9 +526,31 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct AbilityAction : Quantum.IComponent {
+    public const Int32 SIZE = 16;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(0)]
+    public AssetRef<AbilityConfig> Ability;
+    [FieldOffset(8)]
+    public FP Progress;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 4261;
+        hash = hash * 31 + Ability.GetHashCode();
+        hash = hash * 31 + Progress.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (AbilityAction*)ptr;
+        AssetRef.Serialize(&p->Ability, serializer);
+        FP.Serialize(&p->Progress, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Character : Quantum.IComponent {
-    public const Int32 SIZE = 12;
-    public const Int32 ALIGNMENT = 4;
+    public const Int32 SIZE = 24;
+    public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     [ExcludeFromPrototype()]
     public CharacterState State;
@@ -530,12 +560,15 @@ namespace Quantum {
     [FieldOffset(8)]
     [ExcludeFromPrototype()]
     public QBoolean CanSprint;
+    [FieldOffset(16)]
+    public AssetRef<WeaponConfig> Weapon;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 13711;
         hash = hash * 31 + (Int32)State;
         hash = hash * 31 + (Int32)OngoingLocomotion;
         hash = hash * 31 + CanSprint.GetHashCode();
+        hash = hash * 31 + Weapon.GetHashCode();
         return hash;
       }
     }
@@ -544,6 +577,7 @@ namespace Quantum {
         serializer.Stream.Serialize((Int32*)&p->State);
         serializer.Stream.Serialize((Int32*)&p->OngoingLocomotion);
         QBoolean.Serialize(&p->CanSprint, serializer);
+        AssetRef.Serialize(&p->Weapon, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -606,6 +640,8 @@ namespace Quantum {
       Initialize(this, this.SimulationConfig.Entities, 256);
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
+      BuildSignalsArrayOnComponentAdded<Quantum.AbilityAction>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.AbilityAction>();
       BuildSignalsArrayOnComponentAdded<Quantum.Character>();
       BuildSignalsArrayOnComponentRemoved<Quantum.Character>();
       BuildSignalsArrayOnComponentAdded<CharacterController2D>();
@@ -656,6 +692,7 @@ namespace Quantum {
       var i = _globals->input.GetPointer(player);
       i->Move = input.Move;
       i->Dash = i->Dash.Update(this.Number, input.Dash);
+      i->UseWeapon = i->UseWeapon.Update(this.Number, input.UseWeapon);
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
@@ -679,6 +716,7 @@ namespace Quantum {
       SerializeInput = Quantum.Input.Serialize;
     }
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {
+      typeRegistry.Register(typeof(Quantum.AbilityAction), Quantum.AbilityAction.SIZE);
       typeRegistry.Register(typeof(AssetGuid), AssetGuid.SIZE);
       typeRegistry.Register(typeof(AssetRef), AssetRef.SIZE);
       typeRegistry.Register(typeof(Quantum.BitSet1024), Quantum.BitSet1024.SIZE);
@@ -765,8 +803,9 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 3)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 4)
         .AddBuiltInComponents()
+        .Add<Quantum.AbilityAction>(Quantum.AbilityAction.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.Character>(Quantum.Character.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.DashAction>(Quantum.DashAction.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerCharacter>(Quantum.PlayerCharacter.Serialize, null, null, ComponentFlags.None)

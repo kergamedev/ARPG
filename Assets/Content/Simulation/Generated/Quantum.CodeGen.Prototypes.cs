@@ -50,10 +50,26 @@ namespace Quantum.Prototypes {
   #endif //;
   
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.AbilityAction))]
+  public unsafe partial class AbilityActionPrototype : ComponentPrototype<Quantum.AbilityAction> {
+    public AssetRef<AbilityConfig> Ability;
+    public FP Progress;
+    partial void MaterializeUser(Frame frame, ref Quantum.AbilityAction result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.AbilityAction component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.AbilityAction result, in PrototypeMaterializationContext context = default) {
+        result.Ability = this.Ability;
+        result.Progress = this.Progress;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Character))]
   public unsafe partial class CharacterPrototype : ComponentPrototype<Quantum.Character> {
-    [HideInInspector()]
-    public Int32 _empty_prototype_dummy_field_;
+    public AssetRef<WeaponConfig> Weapon;
     partial void MaterializeUser(Frame frame, ref Quantum.Character result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.Character component = default;
@@ -61,6 +77,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.Character result, in PrototypeMaterializationContext context = default) {
+        result.Weapon = this.Weapon;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -86,10 +103,12 @@ namespace Quantum.Prototypes {
   public unsafe partial class InputPrototype : StructPrototype {
     public FPVector2 Move;
     public Button Dash;
+    public Button UseWeapon;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.Move = this.Move;
         result.Dash = this.Dash;
+        result.UseWeapon = this.UseWeapon;
         MaterializeUser(frame, ref result, in context);
     }
   }

@@ -3,6 +3,7 @@ input
 {
     FPVector2 Move;
     button Dash;
+    button UseWeapon;
 }
 
 // ---COMPONENTS---
@@ -22,6 +23,8 @@ component Character
 
     [ExcludeFromPrototype]
     bool CanSprint;
+
+    asset_ref<WeaponConfig> Weapon;
 }
 
 component DashAction
@@ -30,13 +33,25 @@ component DashAction
     FP Speed;
 }
 
+component AbilityAction
+{
+    asset_ref<AbilityConfig> Ability;
+    FP Progress;
+}
+
+// ---ASSETS---
+asset WeaponConfig;
+
+asset AbilityConfig;
+
 // ---TYPES---
 enum CharacterState
 {
     None,
 
     Locomotion,
-    Dashing
+    Dashing,
+    InAbility
 }
 
 enum LocomotionKind

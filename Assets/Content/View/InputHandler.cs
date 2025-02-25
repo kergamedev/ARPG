@@ -9,6 +9,9 @@ public class InputHandler : MonoBehaviour
     private InputActionReference _moveInput;
 
     [SerializeField]
+    private InputActionReference _useWeaponInput;
+
+    [SerializeField]
     private InputActionReference _dashInput;
 
     private void OnEnable()
@@ -22,6 +25,7 @@ public class InputHandler : MonoBehaviour
 
         i.Move = ComputeMoveInput();
         i.Dash = _dashInput.action.ReadValue<float>() != 0;
+        i.UseWeapon = _useWeaponInput.action.ReadValue<float>() != 0;
 
         callback.SetInput(i, DeterministicInputFlags.Repeatable);
     }

@@ -37,11 +37,22 @@ namespace Quantum
             var input = f.GetPlayerInput(filter.Player->Owner);
             var context = new ExecutionContext(f, in filter);
 
-            if (filter.Character->State == CharacterState.Locomotion)
-                UpdateMovement(f, ref filter, input, context);
+            switch (filter.Character->State)
+            {
+                case CharacterState.Locomotion:
+                    UpdateMovement(f, ref filter, input, context);
 
-            if (filter.Character->State != CharacterState.Dashing && input->Dash.WasPressed)
-                TryPerformDash(f, ref filter, input, context);
+                    if (input->UseWeapon.WasPressed)
+                        UseWeapon(f, ref filter, input, context);
+                    else if (input->Dash.WasPressed)
+                        TryPerformDash(f, ref filter, input, context);
+
+                    break;
+
+                default: 
+                    // NO-OP
+                    break;
+            }
         }
 
         private void UpdateMovement(Frame f, ref Filter filter, Input* input, in ExecutionContext context)
@@ -78,6 +89,11 @@ namespace Quantum
             filter.Transform->Position = end;
             filter.Transform->Rotation = FPQuaternion.FromToRotation(FPVector3.Forward, input->Move.XOY.Normalized);
             filter.Character->OngoingLocomotion = locomotionKind;
+        }
+
+        private void UseWeapon(Frame f, ref Filter filter, Input* input, in ExecutionContext context)
+        {
+            CharacterAbilitySystem.Perform(f, filter.Entity, filter.Character->Weapon);
         }
 
         private void TryPerformDash(Frame f, ref Filter filter, Input* input, in ExecutionContext context)
@@ -136,11 +152,12 @@ namespace Quantum
 
         void ISignalOnPlayerAdded.OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
         {
-            var playerData = f.GetPlayerData(player);
-            var playerPrototype = f.FindAsset(playerData.PlayerAvatar);
+            var playerConfig = f.RuntimeConfig.GetPlayerConfig(f);
+            var playerPrototype = f.FindAsset(f.GetPlayerData(player).PlayerAvatar);
             var playerEntity = f.Create(playerPrototype);
+            
             f.Add(playerEntity, new PlayerCharacter() { Owner = player });
-
+            f.Unsafe.GetPointer<Character>(playerEntity)->Weapon = playerConfig.StartingWeapon;
             f.Events.PlayerCharacterSpawned(player, playerEntity);
         }
 

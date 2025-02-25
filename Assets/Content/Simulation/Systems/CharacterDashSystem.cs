@@ -27,10 +27,6 @@ namespace Quantum
                     Speed = speed
                 });
 
-            character->State = CharacterState.Dashing;
-            character->OngoingLocomotion = LocomotionKind.NotInLocomotion;
-            character->CanSprint = true;
-
             f.Events.CharacterDashed(entity, transform->Position);
         }
 

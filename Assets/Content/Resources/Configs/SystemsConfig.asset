@@ -60,17 +60,22 @@ MonoBehaviour:
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.CharacterStateSystem, Quantum.Simulation
-    SystemName: 
-    StartDisabled: 0
-    Children: []
-  - SystemType:
       AssemblyQualifiedName: Quantum.PlayerCharacterSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []
   - SystemType:
       AssemblyQualifiedName: Quantum.CharacterDashSystem, Quantum.Simulation
+    SystemName: 
+    StartDisabled: 0
+    Children: []
+  - SystemType:
+      AssemblyQualifiedName: Quantum.CharacterAbilitySystem, Quantum.Simulation
+    SystemName: 
+    StartDisabled: 0
+    Children: []
+  - SystemType:
+      AssemblyQualifiedName: Quantum.CharacterStateSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6fec2e4cf31ac04da899c62541c30ca, type: 3}
+  m_Name: Bat
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: Content/Resources/Weapons/Bat
+    Guid:
+      Value: 365160870136764440
+  _combo:
+  - Id:
+      Value: 500643790898000615
+  <ViewPrefab>k__BackingField: {fileID: 2793388689669457845, guid: 6c4155a5e8c4e224b87a5921fd5d7179, type: 3}
+  _viewAttaches:
+  - <ForState>k__BackingField: 0
+    <RigAttach>k__BackingField: 0
+    <LocalOffset>k__BackingField: {x: 0, y: -0.486, z: -0.059}
+  - <ForState>k__BackingField: 3
+    <RigAttach>k__BackingField: 1
+    <LocalOffset>k__BackingField: {x: 0, y: 0, z: 0}

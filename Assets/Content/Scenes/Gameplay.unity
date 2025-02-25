@@ -3987,6 +3987,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveInput: {fileID: 8849079858069748907, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _useWeaponInput: {fileID: -1236511961872289158, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _dashInput: {fileID: -669137905337233258, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1001 &2004741532
 PrefabInstance:

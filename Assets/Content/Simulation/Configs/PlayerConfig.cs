@@ -18,6 +18,10 @@ namespace Quantum
         [field: SerializeField]
         public FP SprintSpeedFactor { get; private set; }
 
+        [field: Header("Weapon")]
+        [field: SerializeField]
+        public AssetRef<WeaponConfig> StartingWeapon { get; private set; }
+
         [field: Header("Dash")]
         [field: SerializeField]
         public FP DashSpeed { get; private set; }

@@ -1,9 +1,21 @@
+using Common;
 using Quantum;
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class CharacterView : QuantumEntityViewComponent
 {
+    [Serializable]
+    private struct RigAttachToTransform
+    {
+        [field: SerializeField]
+        public RigAttach Kind { get; private set; }
+
+        [field: SerializeField]
+        public Transform Transform { get; private set; }
+    }
+
     private static readonly int ANIM_IDLE = Animator.StringToHash("Main.Idle");
     private static readonly int ANIM_WALK = Animator.StringToHash("Main.Walk");
     private static readonly int ANIM_RUN = Animator.StringToHash("Main.Run");
@@ -15,7 +27,7 @@ public class CharacterView : QuantumEntityViewComponent
 
     [Header("Dash")]
     [SerializeField]
-    private ParticleSystem _dashVFXPrefab;
+    private ParticleSystemPlayer _dashVFXPrefab;
 
     [SerializeField]
     private float _dashVFXHeightOffset;
@@ -23,10 +35,17 @@ public class CharacterView : QuantumEntityViewComponent
     [SerializeField]
     private Vector3 _dashVFXSpawnOffset;
 
+    [Space]
+    [SerializeField]
+    private RigAttachToTransform[] _attaches;
+
     private Animator _animator;
+    private GameObject _weaponView;
+    private WeaponConfig _lastWeapon;
     private CharacterState _lastCharacterState;
     private LocomotionKind _lastOngoingLocomotion;
-    Quaternion _rotation;
+    private AbilityConfig _lastAbility;
+    private Quaternion _rotation;
 
 
     public override void OnInitialize()
@@ -40,7 +59,28 @@ public class CharacterView : QuantumEntityViewComponent
     public override void OnUpdateView()
     {
         var character = PredictedFrame.Get<Character>(EntityRef);
+
+        var currentWeapon = QuantumUnityDB.GetGlobalAsset(character.Weapon);
+        if (currentWeapon != _lastWeapon)
+        {       
+            if (_weaponView != null)
+            {
+                Destroy(_weaponView);
+                _weaponView = null;
+            }
+
+            if (character.Weapon.IsValid)
+            {
+                _weaponView = Instantiate(currentWeapon.ViewPrefab);
+                AttachWeaponView(character, currentWeapon);
+            }
+        }
+
+        _lastWeapon = currentWeapon;
+
         var changedStateThisTick = character.State != _lastCharacterState;
+        if (changedStateThisTick)
+            PrepareForNewCharacterState(character);
 
         switch (character.State)
         {
@@ -51,9 +91,21 @@ public class CharacterView : QuantumEntityViewComponent
             case CharacterState.Dashing:
                 UpdateDashAnimations(character, changedStateThisTick);
                 break;
-        }
 
+            case CharacterState.InAbility:
+                UpdateAbilityAnimations(character, changedStateThisTick);
+                break;
+        }
+     
         _lastCharacterState = character.State;
+    }
+
+    private void PrepareForNewCharacterState(Character character)
+    {
+        _lastOngoingLocomotion = default;
+        _lastAbility = default;
+
+        AttachWeaponView(character, _lastWeapon);
     }
 
     private void UpdateLocomotionAnimations(Character character, bool changedStateThisTick)
@@ -95,6 +147,57 @@ public class CharacterView : QuantumEntityViewComponent
             return;
 
         _animator.PlayInFixedTime(ANIM_DASH);
+    }
+
+    private void UpdateAbilityAnimations(Character character, bool changedStateThisTick)
+    {
+        if (!PredictedFrame.TryGet(EntityRef, out AbilityAction action))
+            return;
+
+        var currentAbility = QuantumUnityDB.GetGlobalAsset(action.Ability);
+        if (changedStateThisTick || currentAbility != _lastAbility)
+            _animator.PlayInFixedTime(currentAbility.Animation);
+
+        _lastAbility = currentAbility;
+    }
+
+    private void AttachWeaponView(Character character, WeaponConfig weapon)
+    {
+        if (_weaponView == null)
+            return;
+
+        var weaponAttach = default(WeaponConfig.Attach?);
+        foreach (var attach in weapon.ViewAttaches)
+        {
+            if (attach.ForState != character.State)
+                continue;
+            
+            weaponAttach = attach;
+            break;
+        }
+
+        if (weaponAttach == null)
+            weaponAttach = weapon.ViewAttaches.FirstOrDefault(attach => attach.ForState == CharacterState.None);
+
+        if (weaponAttach == null)
+        {
+            _weaponView.SetActive(false);
+            return;
+        }
+
+        var matchIndex = Array.FindIndex(_attaches, attach => attach.Kind == weaponAttach.Value.RigAttach);
+        if (matchIndex == -1)
+        {
+            _weaponView.SetActive(false);
+            return;
+        }
+
+        var match = _attaches[matchIndex];
+
+        _weaponView.SetActive(true);
+        _weaponView.transform.parent = match.Transform;
+        _weaponView.transform.localRotation = Quaternion.identity;
+        _weaponView.transform.localPosition = weaponAttach.Value.LocalOffset;
     }
 
     private void OnCharacterDashed(EventCharacterDashed evt)

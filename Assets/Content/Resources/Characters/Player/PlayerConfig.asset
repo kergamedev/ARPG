@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
   Identifier:
-    Path: Content/Resources/Configs/PlayerConfig
+    Path: Content/Resources/Characters/Player/PlayerConfig
     Guid:
       Value: 295751485452835506
   <MoveSpeed>k__BackingField:
@@ -24,6 +24,9 @@ MonoBehaviour:
     RawValue: 32768
   <SprintSpeedFactor>k__BackingField:
     RawValue: 98304
+  <StartingWeapon>k__BackingField:
+    Id:
+      Value: 365160870136764440
   <DashSpeed>k__BackingField:
     RawValue: 6553600
   <DashCooldown>k__BackingField:
