@@ -27,7 +27,7 @@ namespace Quantum
                     Speed = speed
                 });
 
-            f.Events.CharacterDashed(entity, transform->Position);
+            f.Events.CharacterDashed(entity, transform->Position, destination);
         }
 
         public override void Update(Frame f, ref Filter filter)

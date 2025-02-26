@@ -209,15 +209,12 @@ public class CharacterView : QuantumEntityViewComponent, ICharacterDashedListene
 
     void ICharacterDashedListener.OnCharacterDashed(EventCharacterDashed evt)
     {
-        if (!PredictedFrame.TryGet(evt.Character, out DashAction dash))
-            return;
-
         var dashStart = evt.Start.ToUnityVector3() + Vector3.up * _dashVFXHeightOffset;
-        var dashEnd = dash.Destination.ToUnityVector3() + Vector3.up * _dashVFXHeightOffset;
+        var dashEnd = evt.End.ToUnityVector3() + Vector3.up * _dashVFXHeightOffset;
 
         var vfx = Instantiate(_dashVFXPrefab);
         vfx.transform.rotation = Quaternion.FromToRotation(Vector3.forward, (dashEnd - dashStart).normalized);
-        vfx.transform.position = dash.Destination.ToUnityVector3() + vfx.transform.TransformDirection(_dashVFXSpawnOffset) + (Vector3.up * _dashVFXHeightOffset);
+        vfx.transform.position = evt.End.ToUnityVector3() + vfx.transform.TransformDirection(_dashVFXSpawnOffset) + (Vector3.up * _dashVFXHeightOffset);
         vfx.Play();
     }
 

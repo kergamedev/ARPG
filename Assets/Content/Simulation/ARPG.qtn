@@ -115,10 +115,11 @@ synced event PlayerCharacterSpawned
     entity_ref Character;
 }
 
-event CharacterDashed
+synced event CharacterDashed
 {
     entity_ref Character;
     FPVector3 Start;
+    FPVector3 End;
 }
 
 event EntityHit

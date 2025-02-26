@@ -75,10 +75,12 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventCharacterDashed CharacterDashed(EntityRef Character, FPVector3 Start) {
+      public EventCharacterDashed CharacterDashed(EntityRef Character, FPVector3 Start, FPVector3 End) {
+        if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventCharacterDashed>(EventCharacterDashed.ID);
         ev.Character = Character;
         ev.Start = Start;
+        ev.End = End;
         _f.AddEvent(ev);
         return ev;
       }
@@ -123,11 +125,12 @@ namespace Quantum {
     public new const Int32 ID = 2;
     public EntityRef Character;
     public FPVector3 Start;
+    public FPVector3 End;
     protected EventCharacterDashed(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
     public EventCharacterDashed() : 
-        base(2, EventFlags.Server|EventFlags.Client) {
+        base(2, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
       get {
@@ -142,6 +145,7 @@ namespace Quantum {
         var hash = 43;
         hash = hash * 31 + Character.GetHashCode();
         hash = hash * 31 + Start.GetHashCode();
+        hash = hash * 31 + End.GetHashCode();
         return hash;
       }
     }
