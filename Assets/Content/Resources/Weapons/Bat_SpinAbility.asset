@@ -1,0 +1,1395 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 616da85aada29dd4aaebcc1097b6bccd, type: 3}
+  m_Name: Bat_SpinAbility
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: Content/Resources/Weapons/Bat_SpinAbility
+    Guid:
+      Value: 308992563241734230
+  _effects:
+  - rid: 5151218074242515340
+  <HitBuffer>k__BackingField:
+    RawValue: 65470464
+  <SpeedFactor>k__BackingField:
+    RawValue: 114688
+  <Animation>k__BackingField: 391353310
+  <Duration>k__BackingField:
+    RawValue: 157286
+  _animatedHitBoxes:
+  - <Shape>k__BackingField: 1
+    _animatedProperties:
+    - <Kind>k__BackingField: 0
+      <X>k__BackingField:
+        Samples:
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: -83230
+        - RawValue: -83230
+        - RawValue: 69918
+        - RawValue: 170147
+        - RawValue: 132382
+        - RawValue: 54876
+        - RawValue: -56442
+        - RawValue: -158146
+        - RawValue: -94371
+        - RawValue: 36060
+        - RawValue: 105144
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        PreWrapMode: 8
+        PostWrapMode: 8
+        StartTime:
+          RawValue: 0
+        EndTime:
+          RawValue: 157286
+        Resolution: 32
+        OriginalPreWrapMode: 0
+        OriginalPostWrapMode: 0
+        Keys:
+        - Time:
+            RawValue: 0
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 37137
+          Value:
+            RawValue: -83230
+          InTangent:
+            RawValue: 1
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 3
+          TangentModeRight: 0
+          WeightedMode: 0
+        - Time:
+            RawValue: 45875
+          Value:
+            RawValue: -77987
+          InTangent:
+            RawValue: 1
+          OutTangent:
+            RawValue: 125828
+          TangentMode: 0
+          TangentModeLeft: 3
+          TangentModeRight: 0
+          WeightedMode: 0
+        - Time:
+            RawValue: 48059
+          Value:
+            RawValue: 22282
+          InTangent:
+            RawValue: 2831155
+          OutTangent:
+            RawValue: 2831155
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 50244
+          Value:
+            RawValue: 110755
+          InTangent:
+            RawValue: 2015232
+          OutTangent:
+            RawValue: 2015232
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 52428
+          Value:
+            RawValue: 156631
+          InTangent:
+            RawValue: 865074
+          OutTangent:
+            RawValue: 865074
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 54613
+          Value:
+            RawValue: 171048
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 56797
+          Value:
+            RawValue: 161218
+          InTangent:
+            RawValue: -579993
+          OutTangent:
+            RawValue: -579993
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 58982
+          Value:
+            RawValue: 132382
+          InTangent:
+            RawValue: -904396
+          OutTangent:
+            RawValue: -904396
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 61166
+          Value:
+            RawValue: 100925
+          InTangent:
+            RawValue: -1012531
+          OutTangent:
+            RawValue: -1012531
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 63351
+          Value:
+            RawValue: 64880
+          InTangent:
+            RawValue: -1179648
+          OutTangent:
+            RawValue: -1179648
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 65536
+          Value:
+            RawValue: 22282
+          InTangent:
+            RawValue: -1395916
+          OutTangent:
+            RawValue: -1395916
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 67720
+          Value:
+            RawValue: -28180
+          InTangent:
+            RawValue: -1602353
+          OutTangent:
+            RawValue: -1602353
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 69905
+          Value:
+            RawValue: -84541
+          InTangent:
+            RawValue: -1582693
+          OutTangent:
+            RawValue: -1582693
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 72089
+          Value:
+            RawValue: -133693
+          InTangent:
+            RawValue: -1140327
+          OutTangent:
+            RawValue: -1140327
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 74274
+          Value:
+            RawValue: -160563
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 76458
+          Value:
+            RawValue: -146800
+          InTangent:
+            RawValue: 825753
+          OutTangent:
+            RawValue: 825753
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 78643
+          Value:
+            RawValue: -94371
+          InTangent:
+            RawValue: 1700657
+          OutTangent:
+            RawValue: 1700657
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 80827
+          Value:
+            RawValue: -33423
+          InTangent:
+            RawValue: 1779304
+          OutTangent:
+            RawValue: 1779304
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 83012
+          Value:
+            RawValue: 24248
+          InTangent:
+            RawValue: 1484391
+          OutTangent:
+            RawValue: 1484391
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 85196
+          Value:
+            RawValue: 65536
+          InTangent:
+            RawValue: 1022360
+          OutTangent:
+            RawValue: 1022360
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 87381
+          Value:
+            RawValue: 92405
+          InTangent:
+            RawValue: 697957
+          OutTangent:
+            RawValue: 697957
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 89565
+          Value:
+            RawValue: 112066
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 1
+          TangentMode: 0
+          TangentModeLeft: 0
+          TangentModeRight: 3
+          WeightedMode: 0
+        - Time:
+            RawValue: 91750
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 157286
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+      <Y>k__BackingField:
+        Samples:
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 130424
+        - RawValue: 82288
+        - RawValue: 60907
+        - RawValue: 58327
+        - RawValue: 58982
+        - RawValue: 58327
+        - RawValue: 57876
+        - RawValue: 56432
+        - RawValue: 60293
+        - RawValue: 60738
+        - RawValue: 70123
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        PreWrapMode: 8
+        PostWrapMode: 8
+        StartTime:
+          RawValue: 0
+        EndTime:
+          RawValue: 157286
+        Resolution: 32
+        OriginalPreWrapMode: 0
+        OriginalPostWrapMode: 0
+        Keys:
+        - Time:
+            RawValue: 0
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 37137
+          Value:
+            RawValue: 139591
+          InTangent:
+            RawValue: 1
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 3
+          TangentModeRight: 0
+          WeightedMode: 0
+        - Time:
+            RawValue: 45875
+          Value:
+            RawValue: 72744
+          InTangent:
+            RawValue: -204472
+          OutTangent:
+            RawValue: -204472
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 48059
+          Value:
+            RawValue: 64225
+          InTangent:
+            RawValue: -206438
+          OutTangent:
+            RawValue: -206438
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 50244
+          Value:
+            RawValue: 58982
+          InTangent:
+            RawValue: -39321
+          OutTangent:
+            RawValue: -39321
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 52428
+          Value:
+            RawValue: 58327
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 54613
+          Value:
+            RawValue: 58327
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 56797
+          Value:
+            RawValue: 60948
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 58982
+          Value:
+            RawValue: 58982
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 61166
+          Value:
+            RawValue: 58982
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 63351
+          Value:
+            RawValue: 58327
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 65536
+          Value:
+            RawValue: 58327
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 67720
+          Value:
+            RawValue: 58327
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 69905
+          Value:
+            RawValue: 57016
+          InTangent:
+            RawValue: -49151
+          OutTangent:
+            RawValue: -49151
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 72089
+          Value:
+            RawValue: 55050
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 74274
+          Value:
+            RawValue: 57016
+          InTangent:
+            RawValue: 58982
+          OutTangent:
+            RawValue: 58982
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 76458
+          Value:
+            RawValue: 58982
+          InTangent:
+            RawValue: 49151
+          OutTangent:
+            RawValue: 49151
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 78643
+          Value:
+            RawValue: 60293
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 80827
+          Value:
+            RawValue: 58327
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 83012
+          Value:
+            RawValue: 60293
+          InTangent:
+            RawValue: 58982
+          OutTangent:
+            RawValue: 58982
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 85196
+          Value:
+            RawValue: 62259
+          InTangent:
+            RawValue: 88473
+          OutTangent:
+            RawValue: 88473
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 87381
+          Value:
+            RawValue: 66191
+          InTangent:
+            RawValue: 157286
+          OutTangent:
+            RawValue: 157286
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 89565
+          Value:
+            RawValue: 72744
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 1
+          TangentMode: 0
+          TangentModeLeft: 0
+          TangentModeRight: 3
+          WeightedMode: 0
+        - Time:
+            RawValue: 91750
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 157286
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+      <Z>k__BackingField:
+        Samples:
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: -62427
+        - RawValue: 95457
+        - RawValue: 148234
+        - RawValue: 13025
+        - RawValue: -103546
+        - RawValue: -156876
+        - RawValue: -152821
+        - RawValue: -34391
+        - RawValue: 130416
+        - RawValue: 158069
+        - RawValue: 123494
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        PreWrapMode: 8
+        PostWrapMode: 8
+        StartTime:
+          RawValue: 0
+        EndTime:
+          RawValue: 157286
+        Resolution: 32
+        OriginalPreWrapMode: 0
+        OriginalPostWrapMode: 0
+        Keys:
+        - Time:
+            RawValue: 0
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 37137
+          Value:
+            RawValue: -92405
+          InTangent:
+            RawValue: 1
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 3
+          TangentModeRight: 0
+          WeightedMode: 0
+        - Time:
+            RawValue: 45875
+          Value:
+            RawValue: 127139
+          InTangent:
+            RawValue: 692060
+          OutTangent:
+            RawValue: 692060
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 48059
+          Value:
+            RawValue: 155975
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 50244
+          Value:
+            RawValue: 129105
+          InTangent:
+            RawValue: -1366425
+          OutTangent:
+            RawValue: -1366425
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 52428
+          Value:
+            RawValue: 64880
+          InTangent:
+            RawValue: -1985740
+          OutTangent:
+            RawValue: -1985740
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 54613
+          Value:
+            RawValue: -3276
+          InTangent:
+            RawValue: -1867776
+          OutTangent:
+            RawValue: -1867776
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 56797
+          Value:
+            RawValue: -59637
+          InTangent:
+            RawValue: -1504051
+          OutTangent:
+            RawValue: -1504051
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 58982
+          Value:
+            RawValue: -103546
+          InTangent:
+            RawValue: -1110835
+          OutTangent:
+            RawValue: -1110835
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 61166
+          Value:
+            RawValue: -133693
+          InTangent:
+            RawValue: -756940
+          OutTangent:
+            RawValue: -756940
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 63351
+          Value:
+            RawValue: -154009
+          InTangent:
+            RawValue: -393216
+          OutTangent:
+            RawValue: -393216
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 65536
+          Value:
+            RawValue: -160563
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 67720
+          Value:
+            RawValue: -159907
+          InTangent:
+            RawValue: 39321
+          OutTangent:
+            RawValue: 39321
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 69905
+          Value:
+            RawValue: -137625
+          InTangent:
+            RawValue: 1012530
+          OutTangent:
+            RawValue: 1012530
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 72089
+          Value:
+            RawValue: -92405
+          InTangent:
+            RawValue: 1857947
+          OutTangent:
+            RawValue: 1857947
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 74274
+          Value:
+            RawValue: -13762
+          InTangent:
+            RawValue: 2398620
+          OutTangent:
+            RawValue: 2398620
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 76458
+          Value:
+            RawValue: 67502
+          InTangent:
+            RawValue: 2162686
+          OutTangent:
+            RawValue: 2162686
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 78643
+          Value:
+            RawValue: 130416
+          InTangent:
+            RawValue: 1346763
+          OutTangent:
+            RawValue: 1346763
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 80827
+          Value:
+            RawValue: 157286
+          InTangent:
+            RawValue: 117964
+          OutTangent:
+            RawValue: 117964
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 83012
+          Value:
+            RawValue: 159252
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 85196
+          Value:
+            RawValue: 147456
+          InTangent:
+            RawValue: -422706
+          OutTangent:
+            RawValue: -422706
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 87381
+          Value:
+            RawValue: 131072
+          InTangent:
+            RawValue: -560332
+          OutTangent:
+            RawValue: -560332
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 89565
+          Value:
+            RawValue: 110100
+          InTangent:
+            RawValue: -1258292
+          OutTangent:
+            RawValue: 1
+          TangentMode: 0
+          TangentModeLeft: 0
+          TangentModeRight: 3
+          WeightedMode: 0
+        - Time:
+            RawValue: 91750
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 157286
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+    - <Kind>k__BackingField: 2
+      <X>k__BackingField:
+        Samples:
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        PreWrapMode: 8
+        PostWrapMode: 8
+        StartTime:
+          RawValue: 0
+        EndTime:
+          RawValue: 157286
+        Resolution: 32
+        OriginalPreWrapMode: 0
+        OriginalPostWrapMode: 0
+        Keys:
+        - Time:
+            RawValue: 0
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 37137
+          Value:
+            RawValue: 65536
+          InTangent:
+            RawValue: 1
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 3
+          TangentModeRight: 0
+          WeightedMode: 0
+        - Time:
+            RawValue: 89565
+          Value:
+            RawValue: 65536
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 1
+          TangentMode: 0
+          TangentModeLeft: 0
+          TangentModeRight: 3
+          WeightedMode: 0
+        - Time:
+            RawValue: 91750
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 157286
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+      <Y>k__BackingField:
+        Samples:
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        PreWrapMode: 8
+        PostWrapMode: 8
+        StartTime:
+          RawValue: 0
+        EndTime:
+          RawValue: 157286
+        Resolution: 32
+        OriginalPreWrapMode: 0
+        OriginalPostWrapMode: 0
+        Keys:
+        - Time:
+            RawValue: 0
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 37137
+          Value:
+            RawValue: 65536
+          InTangent:
+            RawValue: 1
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 3
+          TangentModeRight: 0
+          WeightedMode: 0
+        - Time:
+            RawValue: 89565
+          Value:
+            RawValue: 65536
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 91750
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 1
+          TangentMode: 0
+          TangentModeLeft: 0
+          TangentModeRight: 3
+          WeightedMode: 0
+        - Time:
+            RawValue: 157286
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+      <Z>k__BackingField:
+        Samples:
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 65536
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        - RawValue: 0
+        PreWrapMode: 8
+        PostWrapMode: 8
+        StartTime:
+          RawValue: 0
+        EndTime:
+          RawValue: 157286
+        Resolution: 32
+        OriginalPreWrapMode: 0
+        OriginalPostWrapMode: 0
+        Keys:
+        - Time:
+            RawValue: 0
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 37137
+          Value:
+            RawValue: 65536
+          InTangent:
+            RawValue: 1
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 3
+          TangentModeRight: 0
+          WeightedMode: 0
+        - Time:
+            RawValue: 89565
+          Value:
+            RawValue: 65536
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 1
+          TangentMode: 0
+          TangentModeLeft: 0
+          TangentModeRight: 3
+          WeightedMode: 0
+        - Time:
+            RawValue: 91750
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 157286
+          Value:
+            RawValue: 0
+          InTangent:
+            RawValue: 0
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 4
+          TangentModeRight: 4
+          WeightedMode: 0
+  _events:
+  - <Event>k__BackingField: 1
+    <Time>k__BackingField:
+      RawValue: 104857
+  references:
+    version: 2
+    RefIds:
+    - rid: 5151218074242515340
+      type: {class: DamageAF, ns: Quantum, asm: Quantum.Simulation}
+      data:
+        _damage:
+          RawValue: 655360
+        _teamCheck: 1

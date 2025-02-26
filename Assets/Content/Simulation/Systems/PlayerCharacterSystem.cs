@@ -37,21 +37,84 @@ namespace Quantum
             var input = f.GetPlayerInput(filter.Player->Owner);
             var context = new ExecutionContext(f, in filter);
 
+            UpdateActionBuffer(f, ref filter, input, in context);
+            UpdateStateInterruption(f, ref filter, input, in context);
+            UpdateComboProgress(f, ref filter, input, in context);
+
             switch (filter.Character->State)
             {
                 case CharacterState.Locomotion:
                     UpdateMovement(f, ref filter, input, context);
 
-                    if (input->UseWeapon.WasPressed)
-                        UseWeapon(f, ref filter, input, context);
-                    else if (input->Dash.WasPressed)
+                    if (filter.Player->BufferedAction.Value == PlayerAction.Dash)
+                    {
                         TryPerformDash(f, ref filter, input, context);
+                        filter.Player->BufferedAction = new BufferedPlayerAction() { Value = PlayerAction.None, StartTick = -1 };
+                    }
+                    else if (filter.Player->BufferedAction.Value == PlayerAction.UseWeapon)
+                    {
+                        UseWeapon(f, ref filter, input, context);
+                        filter.Player->BufferedAction = new BufferedPlayerAction() { Value = PlayerAction.None, StartTick = -1 };
+                    }
 
                     break;
 
                 default: 
                     // NO-OP
                     break;
+            }
+        }
+
+        private void UpdateActionBuffer(Frame f, ref Filter filter, Input* input, in ExecutionContext context)
+        {
+            if (input->Dash.WasPressed)
+                filter.Player->BufferedAction = new BufferedPlayerAction() { Value = PlayerAction.Dash, StartTick = f.Number };
+            else if (input->UseWeapon.WasReleased)
+                filter.Player->BufferedAction = new BufferedPlayerAction() { Value = PlayerAction.UseWeapon, StartTick = f.Number };
+            else if (filter.Player->BufferedAction.Value != PlayerAction.None)
+            {
+                var elapsedTime = (f.Number - filter.Player->BufferedAction.StartTick) * f.DeltaTime;
+                if (elapsedTime > context.PlayerConfig.ActionBuffer)
+                    filter.Player->BufferedAction = new BufferedPlayerAction() { Value = PlayerAction.None, StartTick = -1 };
+            }
+        }
+
+        private void UpdateStateInterruption(Frame f, ref Filter filter, Input* input, in ExecutionContext context)
+        {
+            if (!WantsToInterruptOngoingState(f, in filter, input, context))
+                return;
+
+            if (filter.Character->State == CharacterState.InAbility &&
+                f.Unsafe.TryGetPointer(filter.Entity, out AbilityAction* ongoingAbility) &&
+                ongoingAbility->CanBeInterrupted)
+            {
+                CharacterAbilitySystem.Interrupt(f, filter.Entity);
+            }
+        }
+
+        private bool WantsToInterruptOngoingState(Frame f, in Filter filter, Input* input, in ExecutionContext context)
+        {
+            if (filter.Player->BufferedAction.Value == PlayerAction.Dash)
+                return true;
+
+            if (filter.Player->BufferedAction.Value == PlayerAction.UseWeapon)
+                return true;
+
+            if (input->Move != FPVector2.Zero && input->Move.Magnitude > context.PlayerConfig.RunThreshold)
+                return true;
+
+            return false;
+        }
+
+        private void UpdateComboProgress(Frame f, ref Filter filter, Input* input, in ExecutionContext context)
+        {
+            var elapsedTimeSinceLastCombo = (f.Number - filter.Player->LastComboTick) * f.DeltaTime;
+
+            var weaponConfig = f.FindAsset(filter.Character->Weapon);
+            if (elapsedTimeSinceLastCombo > weaponConfig.ComboReset)
+            {
+                filter.Player->ComboProgress = 0;
+                filter.Player->LastComboTick = -1;
             }
         }
 
@@ -84,7 +147,7 @@ namespace Quantum
                 moveSpeed *= FPMath.Clamp01(FPVector3.Dot(FPVector3.Up, context.CurrentPositionInfo.Value.Normal));
       
             var end = start + (input->Move.Normalized * moveSpeed * f.DeltaTime).XOY;       
-            end = Navmesh2DToWorld(f, context.NavMesh.MovePositionIntoNavmesh(f, start.XZ, end.XZ, 1, NavMeshRegionMask.Default));
+            end = SimulationUtilities.Navmesh2DToWorld(f, context.NavMesh.MovePositionIntoNavmesh(f, start.XZ, end.XZ, 1, NavMeshRegionMask.Default));
 
             filter.Transform->Position = end;
             filter.Transform->Rotation = FPQuaternion.FromToRotation(FPVector3.Forward, input->Move.XOY.Normalized);
@@ -93,7 +156,12 @@ namespace Quantum
 
         private void UseWeapon(Frame f, ref Filter filter, Input* input, in ExecutionContext context)
         {
-            CharacterAbilitySystem.Perform(f, filter.Entity, filter.Character->Weapon);
+            var weaponConfig = f.FindAsset(filter.Character->Weapon);
+            var ability = weaponConfig.Combo[filter.Player->ComboProgress];
+            CharacterAbilitySystem.Perform(f, filter.Entity, ability);
+
+            filter.Player->ComboProgress = (filter.Player->ComboProgress + 1) % weaponConfig.Combo.Count;
+            filter.Player->LastComboTick = f.Number;
         }
 
         private void TryPerformDash(Frame f, ref Filter filter, Input* input, in ExecutionContext context)
@@ -144,7 +212,7 @@ namespace Quantum
             if (elapsedTimeSinceLastDash < context.PlayerConfig.DashCooldown && !isLookAheadDash)
                 return;
 
-            CharacterDashSystem.Perform(f, filter.Entity, Navmesh2DToWorld(f, end.XZ), context.PlayerConfig.DashSpeed);
+            CharacterDashSystem.Perform(f, filter.Entity, SimulationUtilities.Navmesh2DToWorld(f, end.XZ), context.PlayerConfig.DashSpeed);
             filter.Player->LastDashTick = f.Number;
         }
 
@@ -157,23 +225,7 @@ namespace Quantum
             var playerEntity = f.Create(playerPrototype);
             
             f.Add(playerEntity, new PlayerCharacter() { Owner = player });
-            f.Unsafe.GetPointer<Character>(playerEntity)->Weapon = playerConfig.StartingWeapon;
             f.Events.PlayerCharacterSpawned(player, playerEntity);
-        }
-
-        #endregion
-
-        #region Utility
-
-        private FPVector3 Navmesh2DToWorld(Frame f, FPVector2 position2D)
-        {
-            var position3D = position2D.XOY;
-
-            var endHit = f.Physics3D.Raycast(position3D + FPVector3.Up * 50, FPVector3.Down, 100, f.RuntimeConfig.GetGameConfig(f).FloorMask, QueryOptions.HitStatics);
-            if (endHit != null)
-                position3D.Y = endHit.Value.Point.Y;
-
-            return position3D;
         }
 
         #endregion

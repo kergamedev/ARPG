@@ -1,5 +1,6 @@
 ﻿using Common;
 using Photon.Deterministic;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,23 +10,73 @@ namespace Quantum
 {
     public partial class AbilityConfig : AssetObject
     {
-        [field: SerializeField]
-        [field: ContextMenuItem("Bake", "EDITOR_BakeAnimation")]
-        public int Animation { get; private set; }
+        [Serializable]
+        private struct BakedEvent
+        {
+            public BakedEvent(AbilityEvent evt, FP time)
+            {
+                Event = evt;
+                Time = time;
+            }
+
+            [field: SerializeField]
+            public AbilityEvent Event { get; private set; }
+
+            [field: SerializeField]
+            public FP Time { get; private set; }
+        }
+
+        [SerializeReference]
+        private AbilityEffect[] _effects;
 
         [field: SerializeField]
-        public FP Duration { get; private set; }
+        public FP HitBuffer { get; private set; }
 
-        [field: SerializeField]
+        [field: SerializeField, FoldoutGroup("Baked")]
         public FP SpeedFactor { get; private set; }
 
-        [SerializeField]
+        [field: SerializeField, ReadOnly, FoldoutGroup("Baked")]
+        public int Animation { get; private set; }
+
+        [field: SerializeField, ReadOnly, FoldoutGroup("Baked")]
+        public FP Duration { get; private set; }
+
+        [SerializeField, ReadOnly, FoldoutGroup("Baked")]
         private AnimatedHitBox[] _animatedHitBoxes;
 
+        [SerializeField, ReadOnly, FoldoutGroup("Baked")]
+        private BakedEvent[] _events;
+
         public IReadOnlyList<AnimatedHitBox> AnimatedHitBoxes => _animatedHitBoxes;
+        public IReadOnlyList<AbilityEffect> Effects => _effects;
+
+        public bool HasEventBeenTriggered(AbilityEvent evt, FP time)
+        {
+            return TryGetElapsedTimeSinceEventStart(evt, time, out var elapsedTime) && elapsedTime > 0;
+        }
+
+        public bool TryGetElapsedTimeSinceEventStart(AbilityEvent evt, FP time, out FP elapsedTime)
+        {
+            elapsedTime = default;
+
+            foreach (var entry in _events)
+            {
+                if (entry.Event != evt)
+                    continue;
+
+                if (time < entry.Time)
+                    return false;
+
+                elapsedTime = time - entry.Time;
+                return true;
+            }
+
+            return false;
+        }
 
         #if UNITY_EDITOR
 
+        [Button("Bake")]
         private void EDITOR_BakeAnimation()
         {
             if (!UnityEditor.EditorWindow.HasOpenInstances<UnityEditor.AnimationWindow>())
@@ -50,10 +101,18 @@ namespace Quantum
                 var animatorController = (UnityEditor.Animations.AnimatorController)animator.runtimeAnimatorController;
                 var mainAnimationLayer = animatorController.layers[0];
                 var animationState = mainAnimationLayer.stateMachine.states.First(entry => entry.state.motion == animation).state;
-
+                
                 Animation = Animator.StringToHash($"{mainAnimationLayer.name}.{animationState.name}");
                 Duration = FP.FromFloat_UNSAFE(animation.length);
                 SpeedFactor = FP.FromFloat_UNSAFE(animationState.speed);
+
+                var events = new List<BakedEvent>();
+                foreach (var evt in animation.events)
+                {
+                    if (Enum.TryParse(evt.stringParameter, true, out AbilityEvent abilityEvt))
+                        events.Add(new BakedEvent(abilityEvt, FP.FromFloat_UNSAFE(evt.time)));
+                }
+                _events = events.ToArray(); 
 
                 var animatedHitBoxes = new Dictionary<string, (Shape3DType Shape, Dictionary<string, FPAnimationCurve> Animations)>();
                 var bindings = UnityEditor.AnimationUtility.GetCurveBindings(animation);

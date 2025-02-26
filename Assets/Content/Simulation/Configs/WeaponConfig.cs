@@ -1,4 +1,5 @@
 ﻿using Common;
+using Photon.Deterministic;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,9 @@ namespace Quantum
 
         [SerializeField]
         private AssetRef<AbilityConfig>[] _combo;
+
+        [field: SerializeField]
+        public FP ComboReset { get; private set; }
 
         public IReadOnlyList<AssetRef<AbilityConfig>> Combo => _combo;
 

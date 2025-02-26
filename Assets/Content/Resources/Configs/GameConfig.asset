@@ -18,6 +18,10 @@ MonoBehaviour:
       Value: 521502035924966976
   <FloorMask>k__BackingField:
     BitMask: 64
+  <CharacterMask>k__BackingField:
+    BitMask: 256
+  <ClosestCharacterMaxSearchDistance>k__BackingField:
+    RawValue: 393216
   <PlayerConfig>k__BackingField:
     Id:
       Value: 295751485452835506

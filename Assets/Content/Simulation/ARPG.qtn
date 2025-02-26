@@ -10,11 +10,16 @@ input
 component PlayerCharacter
 {
     player_ref Owner;
+    BufferedPlayerAction BufferedAction;
+    Int32 ComboProgress;
+    Int32 LastComboTick;
     Int32 LastDashTick;
 }
 
 component Character
 {
+    TeamSide Side;
+
     [ExcludeFromPrototype]
     CharacterState State;
 
@@ -36,7 +41,14 @@ component DashAction
 component AbilityAction
 {
     asset_ref<AbilityConfig> Ability;
+    Int32 StartTick;
+    FPVector3 StartPosition;
+    FPQuaternion StartRotation;
     FP Progress;
+    bool CanBeInterrupted;
+
+    [AllocateOnComponentAdded, FreeOnComponentRemoved]
+    hash_set<EntityHit> AlreadyHitEntities;
 }
 
 // ---ASSETS---
@@ -62,6 +74,38 @@ enum LocomotionKind
     Walk,
     Run,
     Sprint
+}
+
+enum TeamSide
+{
+    Player,
+    Enemy
+}
+
+enum TeamCheck
+{
+    AnyTeam,
+    OpposingTeams,
+    SameTeam
+}
+
+enum PlayerAction
+{
+    None,
+    Dash,
+    UseWeapon
+}
+
+struct BufferedPlayerAction
+{
+    PlayerAction Value;
+    Int32 StartTick;
+}
+
+struct EntityHit
+{
+    entity_ref Entity;
+    Int32 Tick;
 }
 
 // ---EVENTS---

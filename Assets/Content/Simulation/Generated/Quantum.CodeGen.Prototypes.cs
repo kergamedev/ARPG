@@ -51,10 +51,18 @@ namespace Quantum.Prototypes {
   
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.AbilityAction))]
-  public unsafe partial class AbilityActionPrototype : ComponentPrototype<Quantum.AbilityAction> {
+  public unsafe class AbilityActionPrototype : ComponentPrototype<Quantum.AbilityAction> {
     public AssetRef<AbilityConfig> Ability;
+    public Int32 StartTick;
+    public FPVector3 StartPosition;
+    [UnitAttribute(Units.Degrees)]
+    public FPVector3 StartRotation;
     public FP Progress;
-    partial void MaterializeUser(Frame frame, ref Quantum.AbilityAction result, in PrototypeMaterializationContext context);
+    public QBoolean CanBeInterrupted;
+    [AllocateOnComponentAdded()]
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.EntityHitPrototype[] AlreadyHitEntities = {};
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.AbilityAction component = default;
         Materialize((Frame)f, ref component, in context);
@@ -62,13 +70,39 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.AbilityAction result, in PrototypeMaterializationContext context = default) {
         result.Ability = this.Ability;
+        result.StartTick = this.StartTick;
+        result.StartPosition = this.StartPosition;
+        result.StartRotation = FPQuaternion.Euler(this.StartRotation);
         result.Progress = this.Progress;
+        result.CanBeInterrupted = this.CanBeInterrupted;
+        if (this.AlreadyHitEntities.Length == 0) {
+          result.AlreadyHitEntities = default;
+        } else {
+          var hashSet = frame.AllocateHashSet(out result.AlreadyHitEntities, this.AlreadyHitEntities.Length);
+          for (int i = 0; i < this.AlreadyHitEntities.Length; ++i) {
+            Quantum.EntityHit tmp = default;
+            this.AlreadyHitEntities[i].Materialize(frame, ref tmp, in context);
+            hashSet.Add(tmp);
+          }
+        }
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BufferedPlayerAction))]
+  public unsafe partial class BufferedPlayerActionPrototype : StructPrototype {
+    public Quantum.QEnum32<PlayerAction> Value;
+    public Int32 StartTick;
+    partial void MaterializeUser(Frame frame, ref Quantum.BufferedPlayerAction result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.BufferedPlayerAction result, in PrototypeMaterializationContext context = default) {
+        result.Value = this.Value;
+        result.StartTick = this.StartTick;
         MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Character))]
   public unsafe partial class CharacterPrototype : ComponentPrototype<Quantum.Character> {
+    public Quantum.QEnum32<TeamSide> Side;
     public AssetRef<WeaponConfig> Weapon;
     partial void MaterializeUser(Frame frame, ref Quantum.Character result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -77,6 +111,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.Character result, in PrototypeMaterializationContext context = default) {
+        result.Side = this.Side;
         result.Weapon = this.Weapon;
         MaterializeUser(frame, ref result, in context);
     }
@@ -99,6 +134,16 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.EntityHit))]
+  public unsafe class EntityHitPrototype : StructPrototype {
+    public MapEntityId Entity;
+    public Int32 Tick;
+    public void Materialize(Frame frame, ref Quantum.EntityHit result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.Entity, in context, out result.Entity);
+        result.Tick = this.Tick;
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
     public FPVector2 Move;
@@ -116,6 +161,9 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerCharacter))]
   public unsafe partial class PlayerCharacterPrototype : ComponentPrototype<Quantum.PlayerCharacter> {
     public PlayerRef Owner;
+    public Quantum.Prototypes.BufferedPlayerActionPrototype BufferedAction;
+    public Int32 ComboProgress;
+    public Int32 LastComboTick;
     public Int32 LastDashTick;
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerCharacter result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -125,6 +173,9 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.PlayerCharacter result, in PrototypeMaterializationContext context = default) {
         result.Owner = this.Owner;
+        this.BufferedAction.Materialize(frame, ref result.BufferedAction, in context);
+        result.ComboProgress = this.ComboProgress;
+        result.LastComboTick = this.LastComboTick;
         result.LastDashTick = this.LastDashTick;
         MaterializeUser(frame, ref result, in context);
     }

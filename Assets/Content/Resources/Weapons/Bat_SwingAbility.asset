@@ -10,17 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 616da85aada29dd4aaebcc1097b6bccd, type: 3}
-  m_Name: Bat_SwingAbility_01
+  m_Name: Bat_SwingAbility
   m_EditorClassIdentifier: 
   Identifier:
-    Path: Content/Resources/Weapons/Bat_SwingAbility_01
+    Path: Content/Resources/Weapons/Bat_SwingAbility
     Guid:
       Value: 500643790898000615
+  _effects:
+  - rid: 5151218074242515276
+  - rid: 5151218074242515275
+  <HitBuffer>k__BackingField:
+    RawValue: 65470464
+  <SpeedFactor>k__BackingField:
+    RawValue: 114688
   <Animation>k__BackingField: -114643860
   <Duration>k__BackingField:
     RawValue: 107042
-  <SpeedFactor>k__BackingField:
-    RawValue: 87163
   _animatedHitBoxes:
   - <Shape>k__BackingField: 1
     _animatedProperties:
@@ -48,7 +53,7 @@ MonoBehaviour:
         - RawValue: 0
         - RawValue: 0
         - RawValue: 0
-        - RawValue: 0
+        - RawValue: -78151
         - RawValue: -81791
         - RawValue: -89508
         - RawValue: -97935
@@ -81,6 +86,18 @@ MonoBehaviour:
           TangentMode: 0
           TangentModeLeft: 4
           TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 37137
+          Value:
+            RawValue: -78151
+          InTangent:
+            RawValue: 1
+          OutTangent:
+            RawValue: -147187
+          TangentMode: 0
+          TangentModeLeft: 3
+          TangentModeRight: 0
           WeightedMode: 0
         - Time:
             RawValue: 39321
@@ -177,7 +194,7 @@ MonoBehaviour:
         - RawValue: 0
         - RawValue: 0
         - RawValue: 0
-        - RawValue: 0
+        - RawValue: 135987
         - RawValue: 135975
         - RawValue: 135886
         - RawValue: 135664
@@ -210,6 +227,18 @@ MonoBehaviour:
           TangentMode: 0
           TangentModeLeft: 4
           TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 37137
+          Value:
+            RawValue: 135987
+          InTangent:
+            RawValue: 1
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 3
+          TangentModeRight: 0
           WeightedMode: 0
         - Time:
             RawValue: 39321
@@ -306,7 +335,7 @@ MonoBehaviour:
         - RawValue: 0
         - RawValue: 0
         - RawValue: 0
-        - RawValue: 0
+        - RawValue: -91750
         - RawValue: -87687
         - RawValue: -68877
         - RawValue: -39643
@@ -339,6 +368,18 @@ MonoBehaviour:
           TangentMode: 0
           TangentModeLeft: 4
           TangentModeRight: 4
+          WeightedMode: 0
+        - Time:
+            RawValue: 37137
+          Value:
+            RawValue: -91750
+          InTangent:
+            RawValue: 1
+          OutTangent:
+            RawValue: 0
+          TangentMode: 0
+          TangentModeLeft: 3
+          TangentModeRight: 0
           WeightedMode: 0
         - Time:
             RawValue: 39321
@@ -764,3 +805,93 @@ MonoBehaviour:
           TangentModeLeft: 4
           TangentModeRight: 4
           WeightedMode: 0
+  _events:
+  - <Event>k__BackingField: 0
+    <Time>k__BackingField:
+      RawValue: 39321
+  - <Event>k__BackingField: 1
+    <Time>k__BackingField:
+      RawValue: 61166
+  references:
+    version: 2
+    RefIds:
+    - rid: 5151218074242515275
+      type: {class: StepAF, ns: Quantum, asm: Quantum.Simulation}
+      data:
+        _curve:
+          Samples:
+          - RawValue: 0
+          - RawValue: 5926
+          - RawValue: 11485
+          - RawValue: 16686
+          - RawValue: 21543
+          - RawValue: 26066
+          - RawValue: 30269
+          - RawValue: 34162
+          - RawValue: 37757
+          - RawValue: 41067
+          - RawValue: 44103
+          - RawValue: 46876
+          - RawValue: 49400
+          - RawValue: 51685
+          - RawValue: 53743
+          - RawValue: 55587
+          - RawValue: 57228
+          - RawValue: 58677
+          - RawValue: 59948
+          - RawValue: 61051
+          - RawValue: 61998
+          - RawValue: 62802
+          - RawValue: 63473
+          - RawValue: 64025
+          - RawValue: 64468
+          - RawValue: 64815
+          - RawValue: 65077
+          - RawValue: 65266
+          - RawValue: 65395
+          - RawValue: 65474
+          - RawValue: 65516
+          - RawValue: 65533
+          - RawValue: 65536
+          PreWrapMode: 0
+          PostWrapMode: 0
+          StartTime:
+            RawValue: 0
+          EndTime:
+            RawValue: 22937
+          Resolution: 32
+          OriginalPreWrapMode: 8
+          OriginalPostWrapMode: 8
+          Keys:
+          - Time:
+              RawValue: 0
+            Value:
+              RawValue: 0
+            InTangent:
+              RawValue: 559102
+            OutTangent:
+              RawValue: 559102
+            TangentMode: 0
+            TangentModeLeft: 0
+            TangentModeRight: 0
+            WeightedMode: 0
+          - Time:
+              RawValue: 22937
+            Value:
+              RawValue: 65536
+            InTangent:
+              RawValue: 0
+            OutTangent:
+              RawValue: 0
+            TangentMode: 0
+            TangentModeLeft: 0
+            TangentModeRight: 0
+            WeightedMode: 0
+        _minDistanceFromClosestTarget:
+          RawValue: 163840
+    - rid: 5151218074242515276
+      type: {class: DamageAF, ns: Quantum, asm: Quantum.Simulation}
+      data:
+        _damage:
+          RawValue: 655360
+        _teamCheck: 1

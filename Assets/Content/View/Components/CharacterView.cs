@@ -44,7 +44,7 @@ public class CharacterView : QuantumEntityViewComponent
     private WeaponConfig _lastWeapon;
     private CharacterState _lastCharacterState;
     private LocomotionKind _lastOngoingLocomotion;
-    private AbilityConfig _lastAbility;
+    private int _lastAbilityStartTick;
     private Quaternion _rotation;
 
 
@@ -103,7 +103,7 @@ public class CharacterView : QuantumEntityViewComponent
     private void PrepareForNewCharacterState(Character character)
     {
         _lastOngoingLocomotion = default;
-        _lastAbility = default;
+        _lastAbilityStartTick = -1;
 
         AttachWeaponView(character, _lastWeapon);
     }
@@ -155,10 +155,13 @@ public class CharacterView : QuantumEntityViewComponent
             return;
 
         var currentAbility = QuantumUnityDB.GetGlobalAsset(action.Ability);
-        if (changedStateThisTick || currentAbility != _lastAbility)
+        if (changedStateThisTick || action.StartTick != _lastAbilityStartTick)
+        {
+            _animator.Rebind();
             _animator.PlayInFixedTime(currentAbility.Animation);
+        }
 
-        _lastAbility = currentAbility;
+        _lastAbilityStartTick = action.StartTick;
     }
 
     private void AttachWeaponView(Character character, WeaponConfig weapon)
@@ -221,5 +224,10 @@ public class CharacterView : QuantumEntityViewComponent
     {
         _rotation = Quaternion.Lerp(_rotation, transform.parent.rotation, _rotationSmoothing * Time.deltaTime);
         transform.rotation = _rotation;
+    }
+
+    private void OnAnimationEvent(string value)
+    {
+        // NO-OP
     }
 }

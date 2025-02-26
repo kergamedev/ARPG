@@ -19,6 +19,12 @@ MonoBehaviour:
   _combo:
   - Id:
       Value: 500643790898000615
+  - Id:
+      Value: 355739462230691310
+  - Id:
+      Value: 308992563241734230
+  <ComboReset>k__BackingField:
+    RawValue: 98304
   <ViewPrefab>k__BackingField: {fileID: 2793388689669457845, guid: 6c4155a5e8c4e224b87a5921fd5d7179, type: 3}
   _viewAttaches:
   - <ForState>k__BackingField: 0

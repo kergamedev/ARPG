@@ -45,6 +45,36 @@ namespace Quantum
             value = default;
             return false;
         }
+
+        public bool TryEvaluateShape(FP time, out Transform3D transform, out Shape3D shape)
+        {
+            transform = new Transform3D();
+            transform.Position = FPVector3.Zero;
+            transform.Rotation = FPQuaternion.Identity;
+
+            shape = default;
+
+            if (!TryEvaluateProperty(HitBoxProperty.Position, time, out var position))
+                return false;
+
+            transform.Position = position;
+
+            if (TryEvaluateProperty(HitBoxProperty.Rotation, time, out var rotation))
+                transform.Rotation = FPQuaternion.Euler(rotation);
+
+            switch (Shape)
+            {
+                case Shape3DType.Sphere:
+                    if (TryEvaluateProperty(HitBoxProperty.Scale, time, out var scale) && scale != FPVector3.Zero)
+                    {
+                        shape = Shape3D.CreateSphere(FPMath.Max(scale.X, scale.Y, scale.Z));
+                        return true;
+                    }
+                    else return false;
+
+                default: return false;
+            }
+        }
     }
 
     [Serializable]

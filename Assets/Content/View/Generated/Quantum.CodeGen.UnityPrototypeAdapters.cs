@@ -49,6 +49,46 @@ namespace Quantum.Prototypes.Unity {
   using RuntimeInitializeOnLoadMethodAttribute = UnityEngine.RuntimeInitializeOnLoadMethodAttribute;
   #endif //;
   
+  [System.SerializableAttribute()]
+  public unsafe partial class AbilityActionPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.AbilityActionPrototype> {
+    public AssetRef<AbilityConfig> Ability;
+    public Int32 StartTick;
+    public FPVector3 StartPosition;
+    [UnitAttribute(Units.Degrees)]
+    public FPVector3 StartRotation;
+    public FP Progress;
+    public QBoolean CanBeInterrupted;
+    [AllocateOnComponentAdded()]
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.Unity.EntityHitPrototype[] AlreadyHitEntities = {};
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.AbilityActionPrototype prototype);
+    public override Quantum.Prototypes.AbilityActionPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.AbilityActionPrototype();
+      converter.Convert(this.Ability, out result.Ability);
+      converter.Convert(this.StartTick, out result.StartTick);
+      converter.Convert(this.StartPosition, out result.StartPosition);
+      converter.Convert(this.StartRotation, out result.StartRotation);
+      converter.Convert(this.Progress, out result.Progress);
+      converter.Convert(this.CanBeInterrupted, out result.CanBeInterrupted);
+      converter.Convert(this.AlreadyHitEntities, out result.AlreadyHitEntities);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
+  public unsafe partial class EntityHitPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.EntityHitPrototype> {
+    public Quantum.QuantumEntityPrototype Entity;
+    public Int32 Tick;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.EntityHitPrototype prototype);
+    public override Quantum.Prototypes.EntityHitPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.EntityHitPrototype();
+      converter.Convert(this.Entity, out result.Entity);
+      converter.Convert(this.Tick, out result.Tick);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
 }
 #pragma warning restore 0109
 #pragma warning restore 1591
