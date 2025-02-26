@@ -417,8 +417,40 @@ Transform:
   - {fileID: 5312278111144424063}
   - {fileID: 9038413580209544485}
   - {fileID: 3232915940098300764}
+  - {fileID: 6855534892429248778}
   m_Father: {fileID: 4933513378516066399}
   m_LocalEulerAnglesHint: {x: 0.00000026680428, y: -0.0000004370406, z: -0.00000007748759}
+--- !u!1 &1557858418338373479
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6855534892429248778}
+  m_Layer: 8
+  m_Name: ChestAttach
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6855534892429248778
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557858418338373479}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 575613165492924711}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1849298733202068547
 GameObject:
   m_ObjectHideFlags: 0
@@ -1181,6 +1213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d3cd84828eeae84b98c7cde63debc4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isPlayer: 1
   _rotationSmoothing: 22.5
   _dashVFXPrefab: {fileID: 740548927287533088, guid: f66b5a7fc5e43374fa9970d0f88f61ff, type: 3}
   _dashVFXHeightOffset: 1.25
@@ -1192,6 +1225,8 @@ MonoBehaviour:
     <Transform>k__BackingField: {fileID: 2375669743274893256}
   - <Kind>k__BackingField: 0
     <Transform>k__BackingField: {fileID: 3232915940098300764}
+  - <Kind>k__BackingField: 3
+    <Transform>k__BackingField: {fileID: 6855534892429248778}
 --- !u!95 &5020735273416978584
 Animator:
   serializedVersion: 7

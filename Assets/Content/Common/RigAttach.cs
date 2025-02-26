@@ -4,6 +4,7 @@
     {
         Back,
         RightHand,
-        LeftHand
+        LeftHand,
+        Chest
     }
 }

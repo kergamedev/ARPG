@@ -1,10 +1,11 @@
 using Common;
 using Quantum;
+using Sirenix.OdinInspector;
 using System;
 using System.Linq;
 using UnityEngine;
 
-public class CharacterView : QuantumEntityViewComponent
+public class CharacterView : QuantumEntityViewComponent, ICharacterDashedListener
 {
     [Serializable]
     private struct RigAttachToTransform
@@ -23,16 +24,19 @@ public class CharacterView : QuantumEntityViewComponent
     private static readonly int ANIM_DASH = Animator.StringToHash("Main.Dash");
 
     [SerializeField]
+    private bool _isPlayer;
+
+    [SerializeField, ShowIf(nameof(_isPlayer))]
     private float _rotationSmoothing;
 
     [Header("Dash")]
-    [SerializeField]
+    [SerializeField, ShowIf(nameof(_isPlayer))]
     private ParticleSystemPlayer _dashVFXPrefab;
 
-    [SerializeField]
+    [SerializeField, ShowIf(nameof(_isPlayer))]
     private float _dashVFXHeightOffset;
 
-    [SerializeField]
+    [SerializeField, ShowIf(nameof(_isPlayer))]
     private Vector3 _dashVFXSpawnOffset;
 
     [Space]
@@ -47,17 +51,17 @@ public class CharacterView : QuantumEntityViewComponent
     private int _lastAbilityStartTick;
     private Quaternion _rotation;
 
-
     public override void OnInitialize()
     {
         _animator = GetComponentInChildren<Animator>();
         _rotation = transform.parent.rotation;
-
-        QuantumEvent.Subscribe<EventCharacterDashed>(this, OnCharacterDashed, onlyIfActiveAndEnabled: true);
     }
 
     public override void OnUpdateView()
     {
+        if (!_isPlayer)
+            return;
+
         var character = PredictedFrame.Get<Character>(EntityRef);
 
         var currentWeapon = QuantumUnityDB.GetGlobalAsset(character.Weapon);
@@ -203,11 +207,8 @@ public class CharacterView : QuantumEntityViewComponent
         _weaponView.transform.localPosition = weaponAttach.Value.LocalOffset;
     }
 
-    private void OnCharacterDashed(EventCharacterDashed evt)
+    void ICharacterDashedListener.OnCharacterDashed(EventCharacterDashed evt)
     {
-        if (evt.Character != EntityRef)
-            return;
-
         if (!PredictedFrame.TryGet(evt.Character, out DashAction dash))
             return;
 
@@ -222,8 +223,23 @@ public class CharacterView : QuantumEntityViewComponent
 
     private void Update()
     {
+        if (!_isPlayer)
+            return;
+
         _rotation = Quaternion.Lerp(_rotation, transform.parent.rotation, _rotationSmoothing * Time.deltaTime);
         transform.rotation = _rotation;
+    }
+
+    public bool TryGetAttach(RigAttach kind, out Transform attach)
+    {
+        attach = default;
+
+        var matchIndex = Array.FindIndex(_attaches, attach => attach.Kind == kind);
+        if (matchIndex == -1)
+            return false;
+
+        attach = _attaches[matchIndex].Transform;
+        return true;
     }
 
     private void OnAnimationEvent(string value)

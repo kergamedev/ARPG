@@ -26,8 +26,8 @@ namespace Quantum
                 if (!SimulationUtilities.CheckTeams(*filter.Character, *hitCharacter, _teamCheck))
                     continue;
 
-                Debug.Log($"Damaging {hit.Entity}...");
                 hitBuffer.Add(new EntityHit() { Entity = hit.Entity, Tick = f.Number });
+                f.Events.EntityHit(filter.Entity, hit.Entity, _damage);
             }
         }
     }
