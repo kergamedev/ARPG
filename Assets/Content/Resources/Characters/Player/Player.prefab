@@ -1213,7 +1213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d3cd84828eeae84b98c7cde63debc4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isPlayer: 1
+  _kind: 1
   _rotationSmoothing: 22.5
   _dashVFXPrefab: {fileID: 740548927287533088, guid: f66b5a7fc5e43374fa9970d0f88f61ff, type: 3}
   _dashVFXHeightOffset: 1.25
